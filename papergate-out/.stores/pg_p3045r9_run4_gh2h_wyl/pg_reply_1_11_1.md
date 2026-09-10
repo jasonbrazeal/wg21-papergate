@@ -1,2 +1,0 @@
-SCORE: 2
-QUOTE: The integer path (`UsesIntegerScaling`) never promotes values to floating-point, even for the rational and irrational sub-paths. This is intentional: the user explicitly chose an integer representation type, opting out of floating-point arithmetic.

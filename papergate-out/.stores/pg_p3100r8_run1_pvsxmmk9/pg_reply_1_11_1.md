@@ -1,2 +1,0 @@
-SCORE: 2
-QUOTE: Labels used in this way provide granular control when needed, allow the Standard to specify useful groupings of different sources of program defects, and give developers the freedom they need to control mitigations for those defects based on exactly the criteria needed for their environments.

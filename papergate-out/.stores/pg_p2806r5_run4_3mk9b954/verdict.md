@@ -1,1 +1,0 @@
-Verdict: Excellent (12/14, close to Strong)

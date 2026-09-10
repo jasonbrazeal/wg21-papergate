@@ -1,2 +1,0 @@
-SCORE: 2
-QUOTE: More than one quantity may be defined for the same dimension: quantities of different kinds (e.g., frequency, modulation rate, activity); quantities of the same kind (e.g., length, width, altitude, distance, radius, wavelength, position vector)

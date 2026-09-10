@@ -1,2 +1,0 @@
-SCORE: 2
-QUOTE: The library therefore uses `magnitude` as the primary name and additionally accepts `norm`-named member functions and free functions as fallbacks, so that types from linear algebra libraries integrate without adaptation.

@@ -1,2 +1,0 @@
-SCORE: 2
-QUOTE: The [[mp-units]](https://mpusz.github.io/mp-units) library, which is the base of this proposal, has the most number of stars in this list, making it the most popular project in the C++ industry.

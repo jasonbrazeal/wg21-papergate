@@ -1,2 +1,0 @@
-SCORE: 1
-QUOTE: The library should work with any representation type for: - Improved safety (overflow prevention, range restrictions). - Additional information (measurement uncertainty). - Linear algebra support.

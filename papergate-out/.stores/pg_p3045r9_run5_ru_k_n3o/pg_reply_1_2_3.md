@@ -1,2 +1,0 @@
-SCORE: 2
-QUOTE: The most famous and probably the most expensive example in the software engineering domain is the Mars Climate Orbiter that in 1999 failed to enter Mars’ orbit and crashed while entering its atmosphere.

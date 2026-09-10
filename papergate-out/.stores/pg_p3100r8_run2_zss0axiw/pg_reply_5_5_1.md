@@ -1,2 +1,0 @@
-SCORE: 2
-QUOTE: This API provides not only a user callback in the form of a program-wide replaceable contract-violation handler, but also programmatically accessible information about the defect via the `contract_violation` object passed into the contract-violation handler.

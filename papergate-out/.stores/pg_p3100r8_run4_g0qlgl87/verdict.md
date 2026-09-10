@@ -1,1 +1,0 @@
-Verdict: Excellent (14/14)

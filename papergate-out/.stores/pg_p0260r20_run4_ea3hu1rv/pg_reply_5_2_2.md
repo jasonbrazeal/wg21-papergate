@@ -1,2 +1,0 @@
-SCORE: 2
-QUOTE: The concepts `basic_concurrent_queue` and `concurrent_queue` capture the common semantics of these widely different implementations and are therefore an important specification for users of such queues, even if the used implementation is not part of the C++ Standard.

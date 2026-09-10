@@ -1,2 +1,0 @@
-SCORE: 2
-QUOTE: "He is the creator and lead developer of [[Au]](https://aurora-opensource.github.io/au), a widely-adopted zero-dependency units library with novel features including vector space magnitudes and adaptive overflow protection."

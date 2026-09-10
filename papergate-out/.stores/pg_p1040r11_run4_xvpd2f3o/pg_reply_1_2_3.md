@@ -1,2 +1,0 @@
-SCORE: 2
-QUOTE: Among the primary use cases for this are: the ability to embed data recursively, such as processing sister language’s that have their own `#include` or `import` statements like CG, HLSL, GLSL, etc.

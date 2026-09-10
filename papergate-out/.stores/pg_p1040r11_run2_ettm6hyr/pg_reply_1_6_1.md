@@ -1,2 +1,0 @@
-SCORE: 2
-QUOTE: Binary data as C(++) arrays provide the overhead of having to comma-delimit every single byte present, it also requires that the compiler verify every entry in that array is a valid literal or entry according to the C++ language.

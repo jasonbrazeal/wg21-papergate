@@ -1,2 +1,0 @@
-SCORE: 2
-QUOTE: The current specification of `lookup` is simple to specify and implement, making `lookup` easy to add to nonstandard map-like containers and new standard containers such as `flat_map` and even for random-access sequence containers, including `vector` and `deque`, should the committee choose to do that.

@@ -1,2 +1,0 @@
-SCORE: 2
-QUOTE: The table below presents the types generated from unit expressions by two leading products on the market in this subject: | [[mp-units]](https://mpusz.github.io/mp-units) | [[Au]](https://aurora-opensource.github.io/au)

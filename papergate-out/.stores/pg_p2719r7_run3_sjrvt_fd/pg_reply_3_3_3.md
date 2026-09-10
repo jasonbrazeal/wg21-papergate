@@ -1,2 +1,0 @@
-SCORE: 2
-QUOTE: The new wording for the return type of allocation and deallocation operators should resolve CWG1676 “`auto` return type for allocation and deallocation functions”, as it follows the approach in CWG1669 “`auto` return type for `main`”.

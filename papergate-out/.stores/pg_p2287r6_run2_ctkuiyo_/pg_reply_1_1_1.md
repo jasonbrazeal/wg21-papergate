@@ -1,2 +1,0 @@
-SCORE: 2
-QUOTE: While I can initialize an `A` like `A{.a=1}`, I cannot designated-initialize `B`. An attempt like `B{{.a=1}, .b=2}` runs afoul of the rule that the initializers must either be all designated or none designated.

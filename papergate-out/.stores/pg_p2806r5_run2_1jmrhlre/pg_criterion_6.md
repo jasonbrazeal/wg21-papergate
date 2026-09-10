@@ -1,1 +1,0 @@
-Shows why solutions outside the standard are insufficient, with specific technical reasons: something a user-space library provably cannot express, cannot do portably, or can only do at unacceptable cost. Mere preference, ergonomics or verbosity complaints, unsupported by a technical obstacle, do not count.

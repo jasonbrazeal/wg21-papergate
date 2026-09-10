@@ -1,2 +1,0 @@
-SCORE: 1
-QUOTE: The initial version R0 of this proposal, containing the basic ideas in this paper, was written up in early 2023, as a product of our work on designing a contract-assertion facility for C++ and understanding the many use cases of such a facility ([P1995R1]).

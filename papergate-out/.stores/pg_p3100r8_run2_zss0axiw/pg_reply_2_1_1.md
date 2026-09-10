@@ -1,2 +1,0 @@
-SCORE: 2
-QUOTE: SG21 Poll 6, Wrocław, 2024-11-22: SF 19, F 6, N 0, A 0, SA 0.

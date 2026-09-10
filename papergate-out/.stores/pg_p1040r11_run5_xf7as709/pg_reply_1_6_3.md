@@ -1,2 +1,0 @@
-SCORE: 2
-QUOTE: There are problems with the `xxd -i` or similar tool-based approach. Lexing and Parsing data-as-source-code adds an enormous overhead to actually reading and making that data available.

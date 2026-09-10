@@ -1,2 +1,0 @@
-SCORE: 2
-QUOTE: Initially [[mp-units]](https://mpusz.github.io/mp-units) library had one additional customization point for units: `template<PrefixableUnit auto U> constexpr bool unit_can_be_prefixed = true;`

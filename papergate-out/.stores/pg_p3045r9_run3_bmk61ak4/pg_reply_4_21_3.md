@@ -1,2 +1,0 @@
-SCORE: 2
-QUOTE: Deciding to postpone this feature will block us from providing proper SI definitions, as the units of this system should be properly constrained for specific quantity kinds (possibly of the same dimension).

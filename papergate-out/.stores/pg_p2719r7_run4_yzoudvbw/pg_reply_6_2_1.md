@@ -1,2 +1,0 @@
-SCORE: 2
-QUOTE: The only difference here is that we’re passing the type being allocated directly as a template argument instead of using a `std::type_identity<T>` tag parameter. Unfortunately, this has a number of problems, the most significant being that it’s not possible to distinguish the newly-introduced type-aware operator from existing template `operator new` and `operator delete` declarations.

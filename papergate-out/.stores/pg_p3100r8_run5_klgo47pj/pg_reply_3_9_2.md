@@ -1,2 +1,0 @@
-SCORE: 2
-QUOTE: `.known` fully checked by the P3850 bounds check (all semantics, both compilers) and rejected during constant evaluation on both compilers; `.unknown` only heuristically by AddressSanitizer, and also rejected during constant evaluation on both compilers; `.pointer.arithmetic` by UBSan’s `pointer-overflow` check on both compilers.

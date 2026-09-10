@@ -1,2 +1,0 @@
-SCORE: 2
-QUOTE: UB in other categories is not commonly exploited by malicious attackers to our knowledge. Nevertheless, some of these cases, for example those in categories Arithmetic and Threading, are a common source of program defects that do sizeable damage to existing software.

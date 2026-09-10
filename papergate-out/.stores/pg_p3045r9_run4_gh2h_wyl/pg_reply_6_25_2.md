@@ -1,2 +1,0 @@
-SCORE: 2
-QUOTE: A general-purpose library will probably result with the types similar to the below: `mul<div<metre, second>, second>` `div<mul<metre, metre>, metre>` Comparing such types for equivalence would not only be very expensive at compile-time but would also be really confusing to the users observing them in the compilation logs.

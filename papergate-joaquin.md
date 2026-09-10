@@ -127,8 +127,14 @@ local text = store.read("paper.md")
 
 local lines = {}
 for line in (text .. "\n"):gmatch("([^\n]*)\n") do
-    table.insert(lines, line)
+    -- Embedded images arrive as single-line base64 data URIs, sometimes
+    -- megabytes long. The line-granular chunker cannot split them and the
+    -- backend rejects the oversized prompt. Keep the alt text, drop the
+    -- payload.
+    table.insert(lines,
+        (line:gsub("!%[(.-)%]%(data:image/[^)]*%)", "[image: %1]")))
 end
+
 if #lines == 0 then
     lines = { "" }
 end

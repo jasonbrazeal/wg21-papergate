@@ -1,2 +1,0 @@
-SCORE: 1
-QUOTE: the [[mp-units]](https://mpusz.github.io/mp-units) library decided to use a rather unusual pattern to define entities, but it proved really successful, and we have received great feedback from users.

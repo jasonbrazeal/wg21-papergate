@@ -1,2 +1,0 @@
-SCORE: 2
-QUOTE: Notably, the [P3400R4] approach has an important advantage over using the `detection_mode` enum, as proposed in [P3081R2] and in earlier versions of this paper: a single implicit contract assertion can belong to multiple groups.

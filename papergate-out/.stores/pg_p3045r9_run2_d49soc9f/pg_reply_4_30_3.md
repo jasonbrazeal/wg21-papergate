@@ -1,2 +1,0 @@
-SCORE: 1  
-QUOTE: The standardization aspect is crucial here—without it, each company uses incompatible internal libraries or ad-hoc approaches, forcing new graduates to relearn concepts they should already know.

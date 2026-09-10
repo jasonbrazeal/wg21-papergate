@@ -1,2 +1,0 @@
-SCORE: 1  
-QUOTE: Experience with writing ad hoc typed quantities without library support that can be combined with or converted to `std::chrono::duration` has shown the downside of bespoke solutions: If not all operations or conversions are handled, users will need to leave the safety of typed quantities to operate on primitive types.

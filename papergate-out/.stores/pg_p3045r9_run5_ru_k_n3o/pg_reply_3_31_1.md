@@ -1,2 +1,0 @@
-SCORE: 2
-QUOTE: [Au] The Au Units library. https://aurora-opensource.github.io/au [Boost.Units] Matthias C. Schabel and Steven Watanabe. Boost.Units. [mp-units] mp-units - A Physical Quantities and Units library for C++. [nholthaus/units] UNITS - A compile-time, header-only, dimensional analysis and unit conversion library

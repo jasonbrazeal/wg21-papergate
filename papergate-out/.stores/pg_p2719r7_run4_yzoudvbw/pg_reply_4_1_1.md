@@ -1,2 +1,0 @@
-SCORE: 1
-QUOTE: While not sufficient in itself to make C++ safer, the change proposed in this paper is a necessary building block for technology such as the above which can greatly improve the security of C++ applications.

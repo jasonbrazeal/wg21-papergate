@@ -1,1 +1,0 @@
-Verdict: Adequate (5/14)

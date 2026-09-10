@@ -1,2 +1,0 @@
-SCORE: 2
-QUOTE: Unfortunately, this has a number of problems, the most significant being that it’s not possible to distinguish the newly-introduced type-aware operator from existing template `operator new` and `operator delete` declarations.

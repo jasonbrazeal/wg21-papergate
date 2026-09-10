@@ -1,1 +1,0 @@
-Explains why the C++ standard specifically is the right vehicle: why this must be in the language or the standard library rather than left to a third-party library, a compiler extension or a quality-of-implementation matter. Arguing that the feature is useful is not the same as arguing that it must be standardized.

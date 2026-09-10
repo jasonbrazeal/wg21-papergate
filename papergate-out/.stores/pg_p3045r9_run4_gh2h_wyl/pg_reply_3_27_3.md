@@ -1,2 +1,0 @@
-SCORE: 2
-QUOTE: This is often different for other physical units libraries, which may return a raw representation type for such cases. A raw value is also always returned from the division of two `std::chrono::duration` values.

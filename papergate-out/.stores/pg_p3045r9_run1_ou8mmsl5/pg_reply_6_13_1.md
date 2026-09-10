@@ -1,2 +1,0 @@
-SCORE: 2
-QUOTE: However, it is impossible to predefine one fixed conversion factor for those, as a currency exchange rate varies over time, and the library’s framework can’t provide such an information as an input to the built-in conversion function.

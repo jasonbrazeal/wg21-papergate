@@ -1,2 +1,0 @@
-SCORE: 1
-QUOTE: The existing `deque` in the standard library is an inherently sequential data structure. Its reference-returning element access operations cannot synchronize access to those elements with other queue operations.

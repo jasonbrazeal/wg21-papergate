@@ -1,2 +1,0 @@
-SCORE: 2
-QUOTE: This is consistent with the rest of the C++ standard library, including `std::chrono::duration`, which likewise leaves floating-point conversion precision to the quality of the implementation.

@@ -1,2 +1,0 @@
-SCORE: 2
-QUOTE: Mission and life-critical projects, or those for embedded devices, often have to obey the safety norms that care about software for safety-critical systems (e.g., ISO 61508 is a basic functional safety standard applicable to all industries, and ISO 26262 for automotive).

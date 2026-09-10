@@ -1,2 +1,0 @@
-SCORE: 2
-QUOTE: Initially, [[mp-units]] library was providing numerical value modifiers inplace of its format specification similarly to `std::chrono::duration` formatter. However, it: - worked only with fundamental arithmetic types and was not able to adjust to different format specifications of custom representation types, - was quite hard to parse and format everything in a 100% compatible way with the formatting specified in the C++ standard and already implemented in the underlying standard library.

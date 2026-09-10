@@ -1,2 +1,0 @@
-SCORE: 2
-QUOTE: Waiting on a full or empty queue can take a while, which has an opportunity cost. Avoiding that wait enables algorithms to do other work rather than wait for a push on a full queue, and to do other work rather than wait for a pop on an empty queue.

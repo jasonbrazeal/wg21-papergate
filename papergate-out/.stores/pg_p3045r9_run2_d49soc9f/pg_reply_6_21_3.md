@@ -1,2 +1,0 @@
-SCORE: 2
-QUOTE: If we remove this feature, we would not be able to make a distinction between `Hz`, `Bq`, and `Bd`, or `rad`, `sr` and `bit`, or `Gy` and `Sv` as the quantities associated with those units have the same dimensions.

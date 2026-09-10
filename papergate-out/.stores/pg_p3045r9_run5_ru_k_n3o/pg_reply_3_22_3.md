@@ -1,2 +1,0 @@
-SCORE: 2
-QUOTE: [[Boost.Units]](https://www.boost.org/doc/libs/1_83_0/doc/html/boost_units.html) claims the answer to be 2 Hz (bauds not supported), [[nholthaus/units]](https://github.com/nholthaus/units) claims it is 2 s<sup>-1</sup> (bauds not supported), [[Pint]](https://pint.readthedocs.io/en/stable/index.html) library in Python claims the result is 3.0 Hz, [[JSR 385]](https://unitsofmeasurement.github.io/indriya) library in Java throws an exception

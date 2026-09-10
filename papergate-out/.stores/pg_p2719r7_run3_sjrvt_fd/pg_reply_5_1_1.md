@@ -1,2 +1,0 @@
-SCORE: 2
-QUOTE: By providing the concrete type information to allocators at compile time, it becomes possible for users to override `operator new` for a family of types that they control without overriding it for the whole process, which is what they *actually* want.

@@ -1,2 +1,0 @@
-SCORE: 2
-QUOTE: It turns out that the certification organizations are not consistent here. ISO 80000-5 says: > Prefixes are not allowed in combination with the unit °C. However, [NIST states](https://www.nist.gov/pml/owm/writing-si-metric-system-units): > Prefix symbols may be used with the unit symbol ºC

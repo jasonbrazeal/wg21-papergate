@@ -1,2 +1,0 @@
-SCORE: 2
-QUOTE: Other alternative spellings we’ve considered: `do return` (in the previous revision of this paper, which has an ambiguity with `do ... while` loops), `do_yield` (presented to EWG in Issaquah as the initial pre-publication draft of this proposal), `do yield`, `do break`, `=>` (or some other arrow, like `<-` or `<=`)

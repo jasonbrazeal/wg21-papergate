@@ -1,2 +1,0 @@
-SCORE: 2
-QUOTE: Companies often have a policy that the software they use must obey all the rules MISRA provides. This is a common misconception, as many of those rules are intended to be deviated from. However, those deviations require rationale and documentation, which is also considered to be risky and expensive by many.

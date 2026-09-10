@@ -1,2 +1,0 @@
-SCORE: 2
-QUOTE: The round-trip requirement simultaneously rejects irreversible silent type promotion, where `operator*` decays to a different type than `T` and never recovers it (e.g. a checked-integer wrapper whose `operator*` returns a raw arithmetic type).

@@ -1,2 +1,0 @@
-SCORE: 1  
-QUOTE: Production feedback confirms this is a groundbreaking feature preventing critical bugs: warehouse robots misinterpreting box dimensions, flight computers passing forward velocity to sink rate parameters, or kinetic energy substituting for potential energy.
