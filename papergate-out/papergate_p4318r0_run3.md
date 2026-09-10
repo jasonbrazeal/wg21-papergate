@@ -1,0 +1,3 @@
+Verdict: Excellent (14/14)
+
+The paper grounds its standardization argument in concrete deployment experience, but that same evidence repeatedly points back to existing non-portable mechanisms as sufficient, leaving the case for a portable standard guarantee notably thin. The strongest support is the documented opt-in use in libc++ and Bloomberg’s BDE, which shows real implementation and adoption. The paper is less convincing when it argues that cross-vendor portability adds meaningful value for teams already committed to a single compiler and build configuration. The most glaring omission is any demonstrated scenario where the proposed standardized response would change what a team can already do today with the vendor-specific opt-in.

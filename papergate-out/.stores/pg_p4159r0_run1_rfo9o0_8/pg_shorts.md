@@ -1,0 +1,1 @@
+motivation,audience,prior_art,vehicle,coordination,insufficiency,implementation

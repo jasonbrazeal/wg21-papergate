@@ -1,0 +1,3 @@
+Verdict: Strong (10/14)
+
+The paper offers meaningful support for standardization through concrete implementation experience and a clear articulation of why the fix cannot live outside the standard, though it leaves the affected audience and the standardization rationale largely implicit. The strongest evidence is practical: the design has been implemented in two real libraries, including a port of a CUDA stream scheduler. The paper also explains with specifics why a library-only solution fails, since many senders cannot know their completion context until started. However, it does not address who is affected by the current breakage, and it never directly explains why the standard is the right venue rather than a coordinated ecosystem change.
