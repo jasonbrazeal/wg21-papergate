@@ -1,0 +1,2 @@
+SCORE: 1  
+QUOTE: The temporary `std::vector<int>` doesn’t persist through the whole `do` expression, it gets destroyed too soon — so our `__r` would be holding a dangling `span` (in the non-error case).

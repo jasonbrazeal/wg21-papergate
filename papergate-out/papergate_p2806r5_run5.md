@@ -1,8 +1,8 @@
 Verdict: Excellent (12/14, close to Strong)
 
-The paper provides a reasonably specific case for why the proposed construct cannot be emulated cleanly with existing language features, and it points to a working implementation, but it leaves the affected audience and some practical standardization context largely unaddressed.
+The paper gives a reasonably specific account of why the feature cannot be achieved with existing language constructs or a library, and it points to implementation experience and prior art, but it leaves the affected audience largely unexamined. The strongest material concerns the limits of immediately invoked lambdas and the connection to other in-flight proposals, while the thinnest area is the absence of any discussion of who would use the feature or how it would affect existing code.
 
-- The strongest support comes from the concrete demonstration that control flow such as `break`, `continue`, and `return` cannot be naturally expressed through an immediately invoked lambda, which anchors the need for a language feature.
-- The existence of a Clang implementation and a Compiler Explorer link gives the proposal useful implementation experience.
-- The discussion of prior art and alternatives is grounded in a clear comparison to immediately invoked lambdas with `[&]` capture.
-- The most glaring omission is the lack of any discussion of who is affected by the problem or how widely the need arises in real code.
+- The paper most convincingly supports standardization by explaining concrete control-flow limitations that immediately invoked lambdas cannot overcome and by tying the feature to an existing clang implementation.
+- It also offers useful coordination context by connecting the proposal to pattern matching and to the desugaring needs of the control flow operator in P2561R2.
+- Prior art is grounded in a specific, familiar example from Rust’s `?` operator, which helps situate the design.
+- The most glaring omission is that the paper does not address who is affected, leaving the practical user base and impact on existing C++ code unstated.

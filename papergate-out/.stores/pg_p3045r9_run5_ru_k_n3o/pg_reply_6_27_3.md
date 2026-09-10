@@ -1,0 +1,2 @@
+SCORE: 2
+QUOTE: In the initial design of the [[mp-units]] library, the resulting type of division of two quantities was their common representation type (just like `std::chrono::duration`): ... However, the feedback we got from the production usage was that such an approach is really bad for generic programming.

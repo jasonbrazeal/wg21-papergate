@@ -1,0 +1,2 @@
+SCORE: 2
+QUOTE: All major C++ units libraries provide dimension safety (level 1) and unit safety (level 2). Some provide representation safety (level 3) and mathematical space safety (level 6). However, [[mp-units]](https://mpusz.github.io/mp-units) is the only C++ library implementing quantity kind safety (level 4) and quantity safety (level 5), making it uniquely comprehensive in its safety guarantees.

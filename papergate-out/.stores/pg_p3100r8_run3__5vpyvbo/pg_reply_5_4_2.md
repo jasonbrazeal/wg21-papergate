@@ -1,0 +1,2 @@
+SCORE: 2
+QUOTE: named parties who must agree, an ABI or vocabulary-type boundary across which independently written code must interoperate, or incompatible ecosystem conventions that a single blessed spelling would unify.

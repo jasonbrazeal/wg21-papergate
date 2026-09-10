@@ -1,8 +1,8 @@
-Verdict: Strong (11/14, close to Excellent)
+Verdict: Strong (10/14)
 
-The paper gives a reasonably concrete account of why `lookup` would be useful and how it could be specified, but it leans heavily on assertion when explaining why this belongs in the standard rather than in a library. The strongest material concerns prior art, naming, and implementation experience, while the case for standardization itself is the least developed part.
+The paper gives a reasonably concrete account of the problem and shows that a usable implementation exists, but it leaves the central question of why this belongs in the standard largely unargued. The strongest material concerns naming, prior art, and implementation experience, while the case for standardization itself is the thinnest part of the document.
 
-- The paper supports its motivation with specific shortcomings of the existing associative-container index operator and points to real-world precedent in Folly.
-- It documents naming alternatives and provides a working implementation with tests, which grounds the proposal in practical detail.
-- The discussion of why a standard member function is preferable to a library addition is asserted rather than argued, leaving the standardization rationale thin.
-- Coordination and interoperability with existing or proposed container APIs are not addressed at all.
+- The paper supports its motivation with specific shortcomings of the current associative container index operator and points to existing practice in Folly.
+- It provides a clear discussion of naming alternatives and cites Python’s `get` as prior art, which helps situate the design choice.
+- The implementation link with tests and examples offers tangible evidence that the feature can be built and used.
+- The most glaring omission is any discussion of why the standard should adopt this rather than leaving it to libraries, especially since the paper itself notes that a global function is merely “less intuitive.”

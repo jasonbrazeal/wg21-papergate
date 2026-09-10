@@ -1,0 +1,2 @@
+SCORE: 1  
+QUOTE: disallowing such operations and requiring an explicit cast to a common quantity in every single place makes the code so cluttered with casts that it nearly renders the library unusable.

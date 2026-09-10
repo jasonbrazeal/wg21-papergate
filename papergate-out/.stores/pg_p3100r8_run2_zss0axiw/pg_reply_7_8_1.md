@@ -1,0 +1,2 @@
+SCORE: 2
+QUOTE: implementations: the integer cases are caught by UBSan’s `integer-divide-by-zero` check, constant evaluation, and the P3850 prototype (both compilers, all semantics); floating-point division by zero is caught by UBSan’s `float-divide-by-zero` check, which is not part of the `undefined` group, and constant evaluation.

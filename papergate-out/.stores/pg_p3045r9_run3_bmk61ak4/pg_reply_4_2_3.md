@@ -1,0 +1,2 @@
+SCORE: 2
+QUOTE: Having the physical quantities and units library standardized would solve those issues for many customers, and would allow them to produce safer code for projects on which human life depends every single day.

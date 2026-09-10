@@ -1,0 +1,2 @@
+SCORE: 1
+QUOTE: Concurrent queues are nothing new. They are existing practice since decades of concurrent programming. However, these queues differ in their trade-offs for specific properties, and therefore in their semantics.

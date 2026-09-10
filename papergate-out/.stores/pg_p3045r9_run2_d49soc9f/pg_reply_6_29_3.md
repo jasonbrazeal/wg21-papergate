@@ -1,0 +1,2 @@
+SCORE: 2
+QUOTE: This is caused by the fact that conversion from `double` to `int` is considered truncating. If we would implement the operators in terms of the implicit conversion then we would end up with the quantity of `isq::length / isq::time` as a result, which is suboptimal.

@@ -1,0 +1,2 @@
+SCORE: 2
+QUOTE: Thanks to Lori Hughes for reviewing a previous revision of this paper and providing editorial feedback. Claude (Anthropic) was used for editorial assistance during the preparation of this paper, as well as significant parts of the prototype implementations.

@@ -1,8 +1,8 @@
-Verdict: Adequate (5/14)
+Verdict: Adequate (4/14, close to Weak)
 
-The paper gives a concrete, if narrow, reason for the feature’s importance and shows some engagement with prior alternatives, but it leaves most of the standardization case unstated. The thinnest areas are the absence of any discussion about implementation experience, library workarounds, or coordination with existing rules, which makes the proposal feel more like a motivated request than a fully argued change.
+The paper gives a partial account of why the feature is needed, but it leaves several important standardization questions unanswered, so the case feels more anecdotal than complete. The strongest support is the concrete claim that existing code broke when moving to C++20, while the thinnest areas are the absence of prior-art discussion, implementation experience, and any explanation of why a library solution would not suffice.
 
-- The strongest support is the specific claim that designated initializers currently cannot name direct base-class members, which anchors the problem in existing standard behavior.
-- The mention of real code breaking during a C++20 upgrade offers some practical motivation, though it is asserted rather than demonstrated.
-- The discussion of a previous revision shows at least some consideration of design alternatives for naming base classes.
-- The most glaring omission is the complete lack of implementation experience or evidence that the proposed change is feasible and has been tried in practice.
+- The paper provides a specific, real-world motivation by noting that code using this initialization style broke during a C++20 upgrade.
+- It explains a design change from an earlier revision, showing some evolution of the proposed approach.
+- It does not address prior art or alternatives beyond a brief mention of the earlier revision.
+- It offers no implementation experience or discussion of why the problem cannot be solved in a library.

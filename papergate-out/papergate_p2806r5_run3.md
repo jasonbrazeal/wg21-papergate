@@ -1,7 +1,7 @@
 Verdict: Strong (11/14, close to Excellent)
 
-The paper grounds several of its key arguments in concrete examples and references, particularly around control flow, pattern matching, and the limits of immediately invoked lambdas. The thinnest part of the case is implementation experience, which is asserted without evidence, and the affected audience is not discussed at all.
+The paper provides a reasonably concrete rationale for the feature, with the strongest support concentrated in its discussion of motivations, alternatives, and the limits of library-only approaches. The case is thinnest when it comes to showing who is affected and demonstrating that the feature has been exercised beyond a single implementation.
 
-- The strongest support comes from the specific explanation of why existing constructs cannot express `break`, `continue`, `return`, or coroutine control flow inside the proposed expression.
-- The discussion of prior art and the relationship to pattern matching is also well supported with concrete citations and comparisons.
-- The most glaring omission is the lack of any implementation experience or evidence to back the claim that the feature has been implemented.
+- The paper gives specific, linked examples of prior art and implementation experience, including a Clang implementation and a Compiler Explorer demonstration.
+- The explanation of why a library solution is insufficient is grounded in concrete control-flow and coroutine limitations.
+- The discussion of affected users and the breadth of real-world need is essentially absent, leaving the audience for the proposal unclear.

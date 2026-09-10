@@ -1,0 +1,2 @@
+SCORE: 2
+QUOTE: Unit-specific function interfaces introduce several problems: 1. Expensive unit conversions at each call and return. 2. Additional conversions to use results in caller’s preferred units. 3. Potential data truncation during conversions. 4. Forces floating-point types; integral types fail to compile without explicit `value_cast` or `force_in`, which can produce incorrect results (e.g., division by zero).

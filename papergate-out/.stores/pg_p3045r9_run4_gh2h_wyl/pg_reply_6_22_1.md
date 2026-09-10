@@ -1,0 +1,2 @@
+SCORE: 2
+QUOTE: Unlike `std::chrono::duration` which uses `std::ratio`, this library supports arbitrary conversion factors including irrational numbers (π for radians/degrees) and extreme ratios (electronvolt: 1 eV = 1.602176634×10⁻¹⁹ J).

@@ -1,7 +1,7 @@
 Verdict: Excellent (14/14)
 
-The paper offers substantial, concrete support for its standardization case, drawing on production experience, prior art, teachability, and interoperability examples to justify why a library alone is insufficient. The support is thinnest where it relies on rhetorical appeals to high-profile failures and broad educational benefits rather than demonstrating how the proposed design would be adopted or maintained across the ecosystem.
+The paper offers substantial support for its own standardization, with concrete production examples, explicit audience analysis, and detailed comparisons against prior art and existing libraries. The support is thinnest where it relies on assertions about uniqueness and safety guarantees without showing how those claims were validated beyond the author’s own library.
 
-- The strongest support comes from specific production feedback and implementation experience showing real bug prevention in safety-critical and industrial contexts.
-- The paper also grounds its audience analysis and teachability claims in an established framework, making the case for broad relevance beyond expert users.
-- The most glaring omission is a lack of concrete evidence about how existing units libraries fail to meet the needs that standardization would address, beyond asserting that hierarchies and domain-specific distinctions cannot be expressed without it.
+- The strongest support comes from specific, real-world failure examples that make the case for quantity safety feel urgent and grounded.
+- The paper also does well to map affected audiences and to explain why existing libraries and `std::ratio` cannot meet the stated needs.
+- The most glaring omission is the lack of independent implementation or deployment evidence beyond the author’s own `mp-units` project, leaving the standardization case dependent on a single source.

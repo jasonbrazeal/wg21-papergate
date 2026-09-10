@@ -1,0 +1,2 @@
+SCORE: 2
+QUOTE: A previous revision of this paper proposed allowing only `b1` — coming up with a way to name the base class. This is much more complicated than naming an aggregate member because base classes aren’t just `*identifier*`s, they can include template parameters.

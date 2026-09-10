@@ -1,0 +1,2 @@
+SCORE: 2
+QUOTE: It is easy to cooperate with similar entities of other libraries. No matter if we want to provide interoperability with a simple home-grown strongly typed wrapper type (e.g., `Meter`, `Timestamp`, …) or with a feature-rich quantities and units library, we have to provide specializations of:

@@ -1,8 +1,8 @@
-Verdict: Excellent (13/14)
+Verdict: Excellent (12/14, close to Strong)
 
-The paper offers a reasonably grounded case for standardizing its proposed concepts, with concrete references to implementation experience, prior art, and committee sentiment, though several key justifications are asserted rather than demonstrated. The thinnest support appears where the paper claims a library-only solution is insufficient, since that claim is not backed by evidence or comparison to existing non-standard queue libraries.
+The paper gives concrete support for its conceptual model and implementation feasibility, but it leaves key parts of its standardization argument asserted rather than demonstrated. The thinnest support concerns who is actually affected and why a library-only solution would be insufficient, since those claims are stated without evidence or elaboration.
 
-- The strongest support comes from the availability of a partial implementation, which gives the proposal a tangible basis for further refinement.
-- The recorded LEWG poll and the reference to P3570R0 show that the proposal engages with committee context and related standardization work.
-- The argument that the concepts would be useful even for non-standard queue implementations is repeated but not developed into a clear interoperability or coordination benefit.
-- The most glaring omission is the unsupported assertion that a library cannot solve the problem, leaving the central rationale for standardization without direct evidence or analysis.
+- The strongest support is the existence of a partial implementation, which grounds the proposal in practical experience.
+- The discussion of prior art and the need for standard concepts is tied to specific existing work and common semantics across implementations.
+- The most glaring omission is the unsupported assertion that concurrent queues are a fundamental structuring tool, with no examples or user evidence offered.
+- Equally thin is the claim that a library cannot suffice, which is asserted but never argued against plausible library-based alternatives.

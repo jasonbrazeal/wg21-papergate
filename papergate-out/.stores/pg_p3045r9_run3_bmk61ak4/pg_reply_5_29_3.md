@@ -1,0 +1,2 @@
+SCORE: 2
+QUOTE: Interoperability with the `std::chrono` abstractions ... This library comes with built-in interoperability with those types thanks to: specializations of `quantity_like_traits` and `quantity_point_like_traits` that provide support for implicit conversions between types in both directions

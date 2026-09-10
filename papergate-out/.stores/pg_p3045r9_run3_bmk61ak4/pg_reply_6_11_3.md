@@ -1,0 +1,2 @@
+SCORE: 1
+QUOTE: Using `long double` instead would violate the no-FP principle and introduce rounding (`0.3048` is not exactly representable in binary floating-point); on ARM / Apple Silicon `long double == double` anyway, giving no extra range.

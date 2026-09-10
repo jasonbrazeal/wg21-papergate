@@ -1,8 +1,8 @@
-Verdict: Strong (8/14, close to Adequate)
+Verdict: Adequate (7/14, close to Strong)
 
-The paper provides uneven support for its own standardization, grounding some key motivations and alternatives in concrete technical detail while leaving other important justifications largely asserted. The thinnest areas are the absence of any discussion of affected users, coordination with existing practice, or implementation experience beyond a bare claim.
+The paper provides a narrow but concrete rationale for the proposed mechanism, grounded in a specific language limitation and a referenced core issue, but it leaves several parts of the standardization case largely unargued. The strongest support concerns the need for type knowledge in allocation functions and the inadequacy of a library-only workaround, while the thinnest support surrounds affected users, implementation experience, and the broader case for changing the standard.
 
-- The strongest support comes from the concrete explanation of why type-aware allocation cannot be achieved through a library-only solution.
-- The discussion of prior art is specific, tying the proposed wording to existing CWG issue resolutions and showing a clear path through precedent.
-- The paper asserts implementation experience and dismisses an alternative without offering evidence, leaving those judgments unsupported.
-- The most glaring omission is the lack of any treatment of who is affected or how the change coordinates with existing global `operator new` overrides in the wild.
+- The paper gives a specific reason the change matters by explaining that type knowledge in a new-expression is necessary for flexible custom allocation.
+- It supports the library-workaround discussion with a concrete problem: the inability to distinguish a type-aware operator from existing template declarations.
+- The treatment of implementation experience is asserted rather than demonstrated, with no evidence or examples backing the claimed approach.
+- The paper does not address who is affected, why the standard is the right venue, or how the change coordinates with existing practice.

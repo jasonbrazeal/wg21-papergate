@@ -1,0 +1,2 @@
+SCORE: 2
+QUOTE: The standard library replaced `operator>>(istream&, char*)` with `operator>>(istream&, char(&)[N])` for obvious safety reasons. Adding support for `std::array` or `std::span` to benefit from the same safety would be trivial and avoid new instantiations of the actual I/O logic.

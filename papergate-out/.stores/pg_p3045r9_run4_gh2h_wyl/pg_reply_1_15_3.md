@@ -1,0 +1,2 @@
+SCORE: 2  
+QUOTE: Each of the above quantities expresses some kind of *length*, and each can be measured with meters, which is the unit defined by the [[SI]](https://www.bipm.org/en/publications/si-brochure) for quantities of *length*. However, each has different properties, usage, and sometimes even a different character (*position vector* and *displacement* are vector quantities).

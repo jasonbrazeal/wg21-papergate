@@ -1,0 +1,2 @@
+SCORE: 2
+QUOTE: If Lockheed Martin and NASA could have used standardized vocabulary types in their interfaces, maybe they would not interpret pound-force seconds as newton seconds, and the [[Mars Orbiter]](https://en.wikipedia.org/wiki/Mars_Climate_Orbiter) would not have crashed during the Mars orbital insertion maneuver.

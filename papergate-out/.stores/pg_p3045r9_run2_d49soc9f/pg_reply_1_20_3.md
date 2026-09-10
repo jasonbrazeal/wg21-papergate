@@ -1,0 +1,2 @@
+SCORE: 2
+QUOTE: From the engineering point of view, sometimes Unicode text might not be the best solution as terminals of many (especially embedded) devices can output only letters from the basic literal character set only.

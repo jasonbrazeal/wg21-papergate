@@ -1,0 +1,2 @@
+SCORE: 2
+QUOTE: Probably all the libraries in the wild model the [[SI]](https://www.bipm.org/en/publications/si-brochure) or at least most of it (refer to SI units of quantities of the same dimension but different kinds for more details) and many of them provide support for additional units belonging to various other systems (e.g., imperial).

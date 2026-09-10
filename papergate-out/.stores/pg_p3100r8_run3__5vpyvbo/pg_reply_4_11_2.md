@@ -1,0 +1,2 @@
+SCORE: 1
+QUOTE: Such a control mechanism for runtime checks (or for other tools in our toolbox such as language subsetting) needs to be designed carefully and take into account the overall strategy (Figure 4).

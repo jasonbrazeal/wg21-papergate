@@ -1,0 +1,2 @@
+SCORE: 2
+QUOTE: To summarize, rules for addition, subtraction, and comparison of quantities improve the library usability, while the conversion rules enhance the safety of the library compared to the libraries that do not model quantity kinds.

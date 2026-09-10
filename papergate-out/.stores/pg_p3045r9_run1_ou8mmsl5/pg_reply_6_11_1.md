@@ -1,0 +1,2 @@
+SCORE: 2
+QUOTE: The rational path computes `value * numerator / denominator` entirely in integer arithmetic using widened types to prevent intermediate overflow — for example, converting feet to metres multiplies by 3048 before dividing by 10000, which would overflow a 64-bit integer for values above ~3×10¹⁵ without extra width:

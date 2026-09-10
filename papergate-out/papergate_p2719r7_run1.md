@@ -1,8 +1,7 @@
-Verdict: Adequate (7/14, close to Strong)
+Verdict: Strong (8/14, close to Adequate)
 
-The paper provides a modest but uneven case for standardization, grounding its motivation and some design choices in concrete reasoning while leaving several important evidentiary gaps. The thinnest support concerns the claimed practical need and implementation experience, which are asserted rather than demonstrated.
+The paper gives concrete support for why type-aware allocation matters and why a library-only approach is insufficient, but it leaves several parts of the standardization case asserted rather than demonstrated. The thinnest areas are the claimed real-world prevalence of the problem, implementation experience, and any discussion of why the standard is the right venue or how the feature would coordinate with existing practice.
 
-- The strongest support is the specific explanation of why a library-level solution cannot distinguish the type-aware operator from existing templates.
-- The discussion of prior art is usefully tied to a concrete core issue and an existing precedent for the proposed wording approach.
-- The paper does not identify who is affected by the problem or provide evidence that the feature is already used in practice.
-- The claim of implementation experience is made in passing without any supporting details, venues, or lessons learned.
+- The strongest support is the specific explanation of why knowledge of the allocated type is necessary for flexible custom allocation functions.
+- The paper also gives a concrete reason a library solution fails, namely the inability to distinguish the new type-aware operator from existing template declarations.
+- The most glaring omission is the lack of evidence for the asserted widespread problem of codebases overriding global `operator new` and running into trouble.

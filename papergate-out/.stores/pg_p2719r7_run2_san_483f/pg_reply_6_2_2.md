@@ -1,0 +1,2 @@
+SCORE: 2
+QUOTE: For example, a valid `operator new` declaration today would be: `template <class ...Args> void* operator new(std::size_t, Args...);` Hence, an expression like `new (42) int(3)` which would result in a call like `operator new<int>(sizeof(int), 42)` could result in this operator being called with a meaning that isn’t clear.

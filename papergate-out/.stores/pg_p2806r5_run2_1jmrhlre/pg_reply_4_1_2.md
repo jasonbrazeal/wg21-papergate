@@ -1,0 +1,2 @@
+SCORE: 2
+QUOTE: This is functionality that immediately invoked lambda expressions *cannot* provide, but something we want to add a new kind of expression to support

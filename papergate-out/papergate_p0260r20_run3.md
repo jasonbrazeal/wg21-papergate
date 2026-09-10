@@ -1,7 +1,8 @@
-Verdict: Excellent (13/14)
+Verdict: Excellent (12/14, close to Strong)
 
-The paper gives a reasonably grounded account of why concurrent queue concepts belong in the standard, with concrete references to prior work, implementation experience, and committee sentiment. The support is thinnest where it tries to justify standardization over a library solution, since that argument rests on a single anecdote about a buggy historical implementation rather than a broader demonstration of need.
+The paper offers a reasonably grounded case for standardization in its discussion of prior art, implementation experience, and the conceptual value of a shared queue interface, but several key justifications are asserted rather than demonstrated. The thinnest support appears where the paper claims who is affected and why a library solution cannot suffice, since those points are stated without concrete evidence or elaboration.
 
-- The strongest support comes from the documented LEWG poll and the existence of a partial implementation, which together show both committee interest and practical feasibility.
-- The paper also benefits from clear prior art in P0260R4 and P1958, giving the proposal a traceable lineage and showing how the current scope was deliberately narrowed.
-- The most glaring omission is the lack of substantive evidence for why a library cannot suffice, leaving the central standardization rationale underdeveloped.
+- The strongest support comes from the availability of a partial implementation and the specific reference to prior work on non-blocking execution support.
+- The argument that standard concepts would benefit users across different queue implementations is concrete and tied to interoperability.
+- The claim that Boost users are affected is asserted without examples or details about which libraries or use cases are involved.
+- The most glaring omission is the lack of substantiation for why a library-only solution would be inadequate, leaving a central rationale for standardization underdeveloped.

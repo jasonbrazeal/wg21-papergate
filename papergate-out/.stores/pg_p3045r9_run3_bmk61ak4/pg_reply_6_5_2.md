@@ -1,0 +1,2 @@
+SCORE: 2
+QUOTE: Subtracting two `absolute_point_origin` instances is forbidden because they lack unit information needed to determine the resulting quantity type.

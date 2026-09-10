@@ -1,0 +1,2 @@
+SCORE: 2
+QUOTE: A companion paper, [P4277R0], contains significant additional commentary on all of the wording changes, along with details on the implementation experience with introducing runtime checks for each of these undefined behaviours.

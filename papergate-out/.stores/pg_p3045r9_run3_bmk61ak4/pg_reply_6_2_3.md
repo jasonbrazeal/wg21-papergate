@@ -1,0 +1,2 @@
+SCORE: 1  
+QUOTE: All of those reasons often prevent the usage of an Open Source product in a company, which is a huge issue, as those companies typically are natural users of physical quantities and units libraries.

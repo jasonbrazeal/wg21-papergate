@@ -1,8 +1,8 @@
 Verdict: Excellent (12/14, close to Strong)
 
-The paper gives a reasonably concrete account of the design space and the need for common queue concepts, but it leans heavily on assertion when it comes to demonstrating demand and ruling out non-standard solutions. The strongest material concerns implementation experience and conceptual interoperability, while the weakest concerns the evidence that existing facilities cannot serve and that the committee or user base actually wants this work.
+The paper makes a reasonably concrete case for standardizing the concepts it proposes, leaning most heavily on implementation experience and the value of a shared semantic specification across differing queue implementations. Its support is thinnest when it asserts broad existing use and when it claims that a library-only solution would be insufficient, since those points are stated rather than demonstrated.
 
-- The paper is most persuasive where it points to a partial implementation and to prior art in sender/receiver design, grounding the proposal in existing practice.
-- The discussion of common concepts as a specification for users of non-standard queues offers a clear standardization rationale.
-- The claim that `std::deque` is inherently sequential is stated rather than demonstrated, leaving the “why a library will not do” case thin.
-- The LEWG poll is presented without interpretation or context, so it does little to establish who is affected or how strong the appetite for standardization really is.
+- The strongest support comes from the availability of a partial implementation, which grounds the proposal in practical experience.
+- The argument that the proposed concepts would serve users even when the underlying queue is not standardized is specific and well articulated.
+- The most glaring omission is the unsupported assertion that the bounded blocking queue concept is old and widely used, with no examples or evidence offered.
+- The claim that a library cannot solve the problem is asserted without explanation, leaving a central justification for standardization unexamined.

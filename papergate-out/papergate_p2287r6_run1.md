@@ -1,8 +1,8 @@
-Verdict: Adequate (4/14, close to Weak)
+Verdict: Adequate (5/14)
 
-The paper gives a concrete, motivated example of breakage and points to an implementation, but it leaves much of the standardization case implicit rather than argued. The strongest material concerns the problem statement and prior-art landscape, while the thinnest areas are the absence of discussion about affected users, standardese rationale, interoperability, and why a library solution is insufficient.
+The paper gives a partial account of why the feature would be useful, but it leaves several important standardization questions unexamined, so the case for adoption rests on a narrow base of motivation and precedent. The strongest material concerns the interaction with existing C++20 rules and the evolution of the proposed design, while the thinnest areas are the absence of implementation experience, library alternatives, and coordination with related language features.
 
-- The paper clearly illustrates the limitation with a specific initializer example and notes real code broke when moving to C++20.
-- It identifies three potential approaches and reports a literal clang implementation, showing the design space has been explored.
-- It does not address who is affected beyond a passing mention, leaving the breadth and severity of the problem largely unquantified.
-- It omits any discussion of why the standard should change, how the feature interacts with other rules, or why a library-level workaround would not suffice.
+- The paper grounds its motivation in a concrete C++20 rule that prevents designated initializers from naming base-class members.
+- It also documents a specific design change from an earlier revision, showing that alternatives have been considered.
+- The claim that real code broke when upgrading to C++20 is asserted without an example or reference, weakening the evidence of user impact.
+- The paper does not address implementation experience, why a library solution would be insufficient, or how the proposal fits with other standardization efforts.

@@ -1,7 +1,8 @@
-Verdict: Strong (11/14, close to Excellent)
+Verdict: Strong (10/14)
 
-The paper gives a reasonably concrete account of the problem and points to existing practice, but it does not fully make the case for standardization because the central claim that a library solution is insufficient is left unsupported. The strongest material concerns motivation and prior art, while the thinnest concerns coordination, interoperability, and the explicit rejection of a non-standard library approach.
+The paper gives a reasonably concrete account of the problem, existing practice, naming choices, and implementation experience, but it leaves the standardization rationale largely implicit. The strongest material concerns practical precedent and availability of code, while the case for why this belongs in the standard itself is the thinnest part of the document.
 
-- The paper supports its motivation with specific examples of awkward `find`-based code and names a real production library, Folly, that already offers similar functionality.
-- It discusses naming alternatives and implementation experience, which grounds the proposal in practical design considerations.
-- The most glaring omission is the unsupported assertion that a namespace-scope library approach “has disadvantages,” leaving the core argument for standardization unsubstantiated.
+- The paper supports its motivation with specific shortcomings of the associative container index operator and points to real-world use in Folly.
+- It documents prior art and naming alternatives clearly, including the Python-inspired choice of `get`.
+- It provides an implementation with tests and usage examples, which strengthens the feasibility argument.
+- It does not address why standardization is preferable to the namespace-scope functions it acknowledges are sufficient, nor does it discuss coordination or interoperability with related standard library features.

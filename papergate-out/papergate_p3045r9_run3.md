@@ -1,8 +1,8 @@
 Verdict: Excellent (14/14)
 
-The paper offers substantial, concrete support for standardization, drawing on production safety failures, implementation experience, and comparisons with existing libraries to justify why a standard vocabulary type is needed. The support is thinnest where it leans on rhetorical or historical examples rather than demonstrating how the proposed design itself would be adopted or verified across the diverse audiences it identifies.
+The paper makes a broadly substantive case for standardization, grounding its argument in concrete failure modes, audience analysis, and comparisons with existing libraries. The support is strongest when it ties the feature to real-world safety consequences and interoperability failures, though it leans heavily on anecdotal production feedback rather than documented implementation breadth.
 
-- The strongest support comes from specific, real-world failure modes—such as warehouse robots and flight computers—that directly tie the absence of standardized units to critical bugs.
-- The paper also grounds its case in prior art by showing how Boost.Units, nholthaus/units, Pint, and JSR 385 each handle the same example inconsistently, which strengthens the argument for a single standard.
-- The audience analysis and implementation experience sections give the proposal a practical, teachability-focused rationale that many library proposals lack.
-- The most glaring omission is that the paper does not explain how the proposed facility would interoperate with existing codebases or migrate incrementally, leaving the coordination and interoperability claim more aspirational than demonstrated.
+- The most compelling support comes from specific, high-stakes examples like the Mars Orbiter and safety-critical parameter confusion in robotics and flight systems.
+- The Teachability chapter’s audience tables and the detailed critique of `std::ratio` give the proposal a clear sense of who would benefit and why a library-only approach falls short.
+- The discussion of prior art is useful but somewhat narrow, focusing on a handful of libraries without fully exploring how a standard component would coexist with or replace them.
+- The thinnest area is implementation experience, which repeats the same production feedback examples rather than offering broader evidence of adoption, performance data, or lessons from real deployments.

@@ -1,0 +1,2 @@
+SCORE: 2
+QUOTE: Such implicitly defined identification labels would make possible programmatically identifying, in the contract-violation handler, whether the violated implicit contract assertion is related to an out-of-bounds issue, an arithmetic issue, and so forth

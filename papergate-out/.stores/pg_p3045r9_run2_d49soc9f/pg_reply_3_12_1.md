@@ -1,0 +1,2 @@
+SCORE: 2
+QUOTE: This example from digital signal processing domain will show how to define custom strongly typed dimensionless quantities, units for them, and how they can be converted to time measured in milliseconds

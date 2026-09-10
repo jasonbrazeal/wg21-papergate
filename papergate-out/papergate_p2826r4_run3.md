@@ -1,8 +1,8 @@
-Verdict: Strong (8/14, close to Adequate)
+Verdict: Strong (9/14)
 
-The paper gives a mixed account of its own readiness, with concrete support for prior art, interoperability, and why a library solution falls short, but it leaves the motivating problem and affected users largely unstated. The thinnest parts are the absence of a real case for why the standard should change and the lack of implementation evidence beyond an acknowledgment.
+The paper offers a mixed case for its own standardization, with concrete reasoning in several areas but little evidence that the feature has been exercised beyond a single implementation. The support is thinnest around motivation and real-world impact, which are left almost entirely implicit.
 
-- The strongest support is the specific explanation of why expression aliases avoid instantiating separate function bodies for different format strings, which directly addresses a library-workaround limitation.
-- The paper also grounds its interoperability claim in a concrete use case: wrapping C APIs by turning individually named functions into overload sets.
-- The discussion of prior art is useful but brief, noting only that Parametric Expressions did not interact well with overload sets.
-- The most glaring omission is that the paper never explains why the feature matters or who is affected, leaving the standardization rationale asserted rather than demonstrated.
+- The strongest support comes from the specific technical arguments about ABI stability, linkage, and avoiding per-instantiation function bodies.
+- The discussion of prior art and why a library solution is insufficient is grounded in concrete examples and comparisons.
+- Implementation experience is only asserted through an acknowledgment, with no description of usage, testing, or lessons learned.
+- The paper never addresses why the feature matters or who would be affected, leaving the core motivation for standardization unstated.

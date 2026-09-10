@@ -1,0 +1,2 @@
+SCORE: 2
+QUOTE: P0260R6 revises P0260R5 - 2023-01-15 as follows.

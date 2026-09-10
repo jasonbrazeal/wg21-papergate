@@ -1,0 +1,2 @@
+SCORE: 2
+QUOTE: For granular, in-source control of the evaluation semantics of implicit contract assertions, we need to agree whether this happens via directives such as the ones proposed in [P3400R4] and shown here, or by using the syntax proposed in the Profiles framework as proposed in [P3589R2].

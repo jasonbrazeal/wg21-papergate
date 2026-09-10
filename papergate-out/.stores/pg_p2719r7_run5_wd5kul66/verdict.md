@@ -1,0 +1,1 @@
+Verdict: Adequate (7/14, close to Strong)

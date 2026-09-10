@@ -1,8 +1,8 @@
 Verdict: Excellent (14/14)
 
-The paper offers substantial, concrete support for its standardization, drawing on production feedback, comparisons with prior art, and a detailed account of safety guarantees that existing libraries do not provide. The support is thinnest where it relies on rhetorical examples—such as the Mars Orbiter reference—rather than directly demonstrating how the proposed vocabulary types would have been adopted or enforced in those interfaces.
+The paper makes a broadly substantive case for standardization, backing its central claims with concrete production failures, prior art comparisons, and audience analysis. The support is strongest when illustrating real-world consequences and interoperability risks, while it is thinnest around the precise scope of what a standard library facility would need to guarantee beyond what existing libraries already provide.
 
-- The strongest support comes from production feedback describing real bug classes that the feature prevents, including warehouse robot and flight computer examples.
-- The Teachability chapter grounds the proposal in audience-specific guidance, showing how different user populations would engage with the feature.
-- The comparison with Boost.Units, nholthaus/units, Pint, and JSR 385 clearly positions the proposal as filling a gap in quantity and kind safety.
-- The most glaring omission is the lack of concrete evidence that standardization, rather than continued use of the existing mp-units library, is necessary to achieve the claimed safety benefits.
+- The paper most convincingly supports standardization through specific, high-stakes examples such as the Mars Orbiter failure and production bugs involving confused quantity kinds.
+- The discussion of prior art is detailed and useful, showing divergent behavior among Boost.Units, nholthaus/units, Pint, and JSR 385 in a way that motivates a common standard.
+- The audience breakdown and teachability tables give a clear picture of who would be affected and how the feature maps to different user populations.
+- The paper is least developed in explaining why the proposed standard facility would succeed where existing libraries have not, particularly regarding the round-trip requirement and enforcement of quantity-kind constraints.

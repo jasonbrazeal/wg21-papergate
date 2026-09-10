@@ -1,0 +1,2 @@
+SCORE: 1
+QUOTE: This problem surfaces especially brightly in the context of [[P2688R4] (Pattern Matching: `match` Expression)](https://wg21.link/P2688R4), where the current design is built upon a sequence of:

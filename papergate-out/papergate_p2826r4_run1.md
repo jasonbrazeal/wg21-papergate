@@ -1,8 +1,8 @@
-Verdict: Strong (8/14, close to Adequate)
+Verdict: Strong (9/14)
 
-The paper offers uneven support for its own standardization: it grounds some technical claims in concrete comparisons and prior work, but leaves the motivating problem and affected audience largely unstated. The thinnest support is around why the standard should adopt this capability at all, since the central rationale is asserted rather than developed.
+The paper offers uneven support for its own standardization, with concrete reasoning in areas like standard-library precedent, C API wrapping, and why a library solution falls short, but it leaves the motivating problem and affected users largely implicit. The thinnest support is in the absence of any discussion of why the feature matters or who would benefit, and the implementation experience is merely asserted rather than described.
 
-- The strongest support comes from the contrast with current library-only approaches, where the paper explains concretely why expression aliases avoid instantiating separate function bodies.
-- Coordination and interoperability are also addressed with a specific claim about ABI stability and true function aliases.
-- Prior art is acknowledged with a named proposal and a brief explanation of its limitation regarding overload sets.
-- The most glaring omission is the absence of any developed motivation for who is affected or why the capability matters beyond a single unsupported sentence about wrapping C APIs.
+- The strongest support is the specific standard-library example showing how replacing `char*` overloads with bounded array overloads improved safety and could be extended to `std::array` or `std::span`.
+- The paper gives a concrete reason a library cannot fully substitute, namely that expression aliases avoid instantiating separate function bodies for each format string.
+- The discussion of prior art is brief but at least names a related proposal and identifies its limitation with overload sets.
+- The most glaring omission is that the paper never explains why the feature matters or who is affected, leaving the core motivation unstated.

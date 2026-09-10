@@ -1,0 +1,2 @@
+SCORE: 2
+QUOTE: Beyond physical units, this library may also provide long-awaited functionality for the C++ community. It enables creating strongly-typed wrappers for fundamental types to prevent bugs that arise from accidentally mixing semantically different values.

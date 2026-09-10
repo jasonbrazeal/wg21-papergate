@@ -1,0 +1,2 @@
+SCORE: 2
+QUOTE: The request for some form of `#include_string` or similar dates back quite a long time, with one of the oldest stack overflow questions asked-and-answered about it dating back nearly 10 years.

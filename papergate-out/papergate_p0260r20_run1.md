@@ -1,8 +1,8 @@
-Verdict: Excellent (13/14)
+Verdict: Strong (11/14, close to Excellent)
 
-The paper offers a reasonably grounded case for standardization, with its strongest support coming from concrete implementation experience, prior art, and a clear articulation of why a standard concept would help users across different queue implementations. The thinnest part is the justification for why a library-only solution is insufficient, which is asserted rather than demonstrated.
+The paper gives concrete support for its core conceptual model and for the existence of implementation experience, but it leaves several of the standardization-facing arguments asserted rather than demonstrated. The thinnest parts concern who is actually affected, why a library solution is insufficient, and how the proposal would coordinate with existing practice.
 
-- The paper’s strongest support is the availability of a partial implementation, which shows the proposed concepts are at least tentatively implementable.
-- The discussion of prior art and the evolution from P0260R3 to P1958 gives useful context for how the proposal fits into existing standardization work.
-- The rationale for standardizing concepts rather than leaving them to libraries is clear in intent but lacks specific examples of what would fail without standardization.
-- The most glaring omission is the unsupported claim that a library solution will not do, since no concrete limitations of a non-standard approach are provided.
+- The strongest support is the availability of a partial implementation, which grounds the proposal in real code rather than pure design.
+- The discussion of prior art and the rationale for standardizing common queue semantics is tied to a specific existing proposal and to the limitations of `std::deque`.
+- The most glaring omission is the lack of evidence for the claimed affected audience, since the reference to Boost queues is not connected to concrete usage or pain points.
+- The argument that a library cannot suffice is asserted through the limits of `std::deque` without addressing whether a non-standard concurrent queue library could meet the same need.

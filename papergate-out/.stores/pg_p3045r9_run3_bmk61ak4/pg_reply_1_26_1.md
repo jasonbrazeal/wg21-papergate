@@ -1,0 +1,2 @@
+SCORE: 2
+QUOTE: `std::ratio` fails these requirements: - Integral types too small for eight SI prefixes - Not closed under rational powers (e.g., \(\sqrt{2}\)) - Cannot represent irrational factors like \(\pi\) - Vulnerable to overflow when raised to powers

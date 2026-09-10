@@ -1,0 +1,2 @@
+SCORE: 2
+QUOTE: These limitations often force the user to resort to the `find` member function, which returns an iterator that points to a `pair` and typically leads to more complex code having at least one `if` statement and/or duplicate lookup operations.

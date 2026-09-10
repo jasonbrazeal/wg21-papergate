@@ -1,8 +1,9 @@
-Verdict: Strong (8/14, close to Adequate)
+Verdict: Strong (9/14)
 
-The paper offers uneven support for its own standardization, with concrete discussion of prior art, library limitations, and interoperability but little direct evidence for the claimed importance or implementation maturity. The thinnest areas are the absence of a motivating rationale tied to affected users and the reliance on an acknowledgment rather than documented implementation experience.
+The paper gives concrete support for several important parts of its case, particularly the standard-library rationale, the limits of library-only solutions, and the relationship to prior work. The thinnest areas are the absence of any discussion of why the feature matters or who would be affected, and an implementation-experience claim that is asserted without any supporting detail.
 
-- The strongest support comes from the specific comparison to Parametric Expressions and the explanation of why a library solution would instantiate separate function bodies.
-- Coordination and interoperability are addressed concretely through the claim that wrapping C APIs would become easier by forming overload sets from individually named functions.
-- The paper asserts the standard-level need and implementation experience without offering supporting detail, leaving those claims largely unsubstantiated.
-- Most glaringly, the document never explains why the feature matters or who is affected, so the case for standardization lacks a clear problem statement.
+- The strongest support is the standard-library motivation, which ties the proposal to an existing safety-motivated change and explains how the new feature would extend that benefit.
+- The library-only limitation is backed by a specific example showing that expression aliases avoid instantiating distinct function bodies for different format strings.
+- The prior-art and interoperability sections offer useful specifics about related proposals and C API wrapping.
+- The most glaring omission is that the paper never addresses why the feature matters or who is affected, leaving the core motivation largely implicit.
+- The implementation-experience section merely names a contributor without describing what was implemented, what was learned, or how that experience informs the proposal.

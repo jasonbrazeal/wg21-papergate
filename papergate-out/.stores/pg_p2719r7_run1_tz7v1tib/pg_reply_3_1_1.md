@@ -1,0 +1,2 @@
+SCORE: 2
+QUOTE: Apple published [a blog post](https://security.apple.com/blog/towards-the-next-generation-of-xnu-memory-safety) explaining a technique used inside its kernel (XNU) to mitigate various exploits.

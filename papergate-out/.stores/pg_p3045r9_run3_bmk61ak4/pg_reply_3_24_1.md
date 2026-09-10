@@ -1,0 +1,2 @@
+SCORE: 2
+QUOTE: During Croydon 2026 (SG18), three concerns were raised: - **Coherence with the rest of the standard library.** - **Volume of names in `std::`.** - **Naming conflicts with existing identifiers.**

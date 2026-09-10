@@ -1,0 +1,2 @@
+SCORE: 2
+QUOTE: This allows someone much greater degrees of freedom and power than is capable with either `#embed` or `_Pragma("embed ...")`, as it allows someone to use other constant expression parsing facilities along the introduction of file-based data.

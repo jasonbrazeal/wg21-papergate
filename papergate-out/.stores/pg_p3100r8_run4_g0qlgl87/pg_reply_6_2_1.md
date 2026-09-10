@@ -1,0 +1,2 @@
+SCORE: 2
+QUOTE: However, for existing C++ programs, reliably detecting cases of UB without rejecting correct code will inevitably have to leverage *runtime* detection, i.e., the insertion of additional runtime checks when compiling the program.

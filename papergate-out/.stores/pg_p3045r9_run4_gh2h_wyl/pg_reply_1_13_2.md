@@ -1,0 +1,2 @@
+SCORE: 2
+QUOTE: Units-only is not a good design for a quantities and units library. It works to some extent, but plenty of use cases can’t be addressed, and for those that somehow work, we miss important safety improvements provided by additional abstractions in this chapter.

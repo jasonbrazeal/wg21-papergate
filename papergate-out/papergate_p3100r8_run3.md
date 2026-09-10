@@ -1,7 +1,8 @@
 Verdict: Excellent (14/14)
 
-The paper provides substantial, concrete support for its standardization case, drawing on implementation experience, existing tooling, and a systematic survey of undefined behavior in the standard. The support is thinnest where it relies on the Contracts facility adopted for C++26, since that foundation is still relatively new and its integration with the proposed framework is asserted rather than demonstrated in detail.
+The paper provides substantial support for its standardization case by grounding its motivation in a concrete inventory of undefined behavior, referencing prior work, and pointing to companion implementation experience. The support is thinnest where it relies on broad strategic arguments rather than demonstrating how the proposed mechanism would be adopted consistently across implementations and toolchains.
 
-- The strongest support comes from the concrete mapping of existing sanitizer and compiler mechanisms, such as `-ftrapv` and UBSan callbacks, onto the proposed semantics.
-- The paper also grounds its motivation in a specific enumeration of undefined behavior instances in the current standard, which lends credibility to the claimed scope.
-- The most glaring omission is a lack of detailed worked examples showing how the framework would apply to a representative sample of those 81 UB instances end-to-end.
+- The strongest support comes from the specific enumeration of 82 undefined-behavior cases and the companion paper documenting implementation experience with runtime checks.
+- The discussion of prior art clearly explains why existing approaches like `detection_mode` are insufficient and how the new grouping mechanism improves on them.
+- The paper connects the proposal to existing tooling realities, such as sanitizer callbacks, showing awareness of interoperability constraints.
+- The most glaring omission is a concrete account of how the proposed control mechanism would integrate with the overall standardization strategy beyond a high-level reference to Figure 4.

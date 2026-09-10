@@ -1,1 +1,0 @@
-Verdict: Weak (3/14, close to Adequate)

@@ -1,0 +1,2 @@
+SCORE: 2
+QUOTE: Many industries need such functionality, including (but hardly limited to): Financial Development, Game Development, Embedded Development, Application Development, Server Development, Static Analyzers.

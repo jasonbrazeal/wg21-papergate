@@ -1,0 +1,2 @@
+SCORE: 1
+QUOTE: The primary motivation for having an init-hoist is largely around being able to define macros for expressions in ways that actually work properly and to be able to desugar the control flow operator

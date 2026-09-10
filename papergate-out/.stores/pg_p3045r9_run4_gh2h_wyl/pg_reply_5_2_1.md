@@ -1,0 +1,2 @@
+SCORE: 2
+QUOTE: Introducing `std::chrono::duration` and `std::chrono::time_point` improved the interfaces a lot, but time is only one of many quantities that we deal with in our software on a daily basis.

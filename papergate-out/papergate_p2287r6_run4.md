@@ -1,8 +1,8 @@
-Verdict: Adequate (7/14, close to Strong)
+Verdict: Adequate (6/14)
 
-The paper gives concrete support for the motivating problem, the design choice, and the existence of an implementation, but it does not build a complete case for standardization because several expected sections are simply absent. The thinnest areas are the lack of any discussion of why the standard is the right venue, why a library solution would not suffice, or how the feature interacts with related language and library machinery.
+The paper gives a mixed account of its own readiness, offering concrete motivation and a clear explanation of the design change, but leaving several important standardization questions entirely unaddressed. The thinnest support concerns who is actually affected, why a library solution is insufficient, and whether any implementation experience exists.
 
-- The strongest support is the implementation experience, which points to a working clang prototype and describes the literal approach taken.
-- The motivation is also well supported with a specific code example showing that designated initialization works for `A` but not for the derived aggregate `B`.
-- The discussion of prior art and alternatives is concrete, noting that an earlier revision considered naming only the base class.
-- The most glaring omission is the absence of any section explaining why the standard should adopt this rather than addressing it through a library or other means.
+- The strongest support is the specific description of how designated initializers currently fail to reach base-class members, which grounds the problem in observable language behavior.
+- The discussion of prior art is also concrete, explaining that an earlier naming approach was abandoned in favor of the current design.
+- The most glaring omission is the absence of any implementation experience or coordination with implementers, leaving feasibility and cost unexplored.
+- The paper also asserts rather than demonstrates the practical impact, citing broken code without details, and never explains why a library-based workaround would not suffice.

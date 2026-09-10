@@ -1,0 +1,2 @@
+SCORE: 2
+QUOTE: Mitigating cases of UB currently considered to be the most critical security concern will simply remove the easiest routes of attack from the table, and any UB not yet addressed may become the new major candidate for attackers to leverage for nefarious purposes.

@@ -1,0 +1,1 @@
+Verdict: Strong (10/14)

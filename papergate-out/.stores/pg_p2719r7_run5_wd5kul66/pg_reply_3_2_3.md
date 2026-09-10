@@ -1,0 +1,2 @@
+SCORE: 2
+QUOTE: In an earlier draft, this paper was proposing the following (seemingly simpler) mechanism. Instead of using `std::type_identity<T>` as a tag, the compiler would search as per the following expression: `operator new<T>(sizeof(T), args...)`

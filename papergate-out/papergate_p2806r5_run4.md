@@ -1,8 +1,8 @@
-Verdict: Strong (11/14, close to Excellent)
+Verdict: Excellent (12/14, close to Strong)
 
-The paper gives a reasonably concrete account of why a `do` expression with an init-hoist belongs in the standard, especially through its comparisons to immediately invoked lambdas and its role in macro desugaring and control-flow operators. The support is thinnest around who is actually affected and whether anyone has implemented the feature in practice, leaving the practical case for standardization more asserted than demonstrated.
+The paper provides substantial support for its standardization case through concrete implementation evidence, clear comparisons to existing alternatives, and specific technical justifications for why a new language feature is needed. The support is thinnest when it comes to explaining who would actually use this feature and what real-world problems it solves for working programmers.
 
-- The strongest support comes from the specific limitations of immediately invoked lambdas, particularly the inability to `break`, `continue`, or `return` naturally from the enclosing context.
-- The paper also grounds its standardization rationale in concrete interoperability needs, such as desugaring the control flow operator and enabling expression macros.
-- The most glaring omission is the lack of any discussion of who is affected by the problem or who would use the proposed feature.
-- Implementation experience is only asserted, with no evidence of compiler support, usage, or lessons learned to back the claim.
+- The strongest support comes from the existence of a working Clang implementation and a compiler explorer link, demonstrating the feature is more than theoretical.
+- The paper clearly articulates why existing mechanisms like immediately invoked lambdas cannot provide the desired behavior, especially around `break`, `continue`, and coroutine control flow.
+- The discussion of prior art and alternatives is specific and helps situate the proposal within existing C++ practice.
+- The most glaring omission is any discussion of who is affected by this proposal or what concrete use cases motivate adding it to the standard.

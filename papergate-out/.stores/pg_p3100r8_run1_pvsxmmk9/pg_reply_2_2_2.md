@@ -1,0 +1,2 @@
+SCORE: 2
+QUOTE: We found 81 instances of explicit language UB introduced with phrases containing the word “undefined” ... and one instance of explicit language UB introduced with a phrase containing the word “assume” ... We thus obtained a list with 82 cases of explicit language UB

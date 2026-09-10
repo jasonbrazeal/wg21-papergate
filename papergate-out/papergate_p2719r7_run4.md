@@ -1,8 +1,8 @@
 Verdict: Adequate (7/14, close to Strong)
 
-The paper offers some concrete reasoning for why the proposed change is necessary and why a library-level solution would be insufficient, but it leaves several important parts of the standardization case unaddressed, particularly around affected users, implementation experience, and coordination with existing practice.
+The paper offers a narrow but concrete rationale for its change, grounded in specific wording issues and a clear limitation of in-class allocation functions. Its support is thinnest when it comes to showing that the feature has been tried in practice or that the affected community and standardization landscape have been considered.
 
-- The strongest support comes from the explanation that even in-class allocation functions lack knowledge of the allocated type, which directly motivates the core change.
-- The paper also ties its wording approach to a prior CWG issue, giving the proposal some precedent and a plausible path through the committee.
-- The discussion of sized versus unsized deallocation hazards is asserted from testing but provides no details, leaving the claimed implementation experience unsubstantiated.
-- The paper does not address who is affected by the change or how it coordinates with existing implementations and related features, which are notable gaps in the standardization rationale.
+- The strongest support is the concrete connection to CWG1676 and the precedent of CWG1669, which gives the proposal a clear path through existing core-language precedent.
+- The paper also explains specifically why a library-level solution cannot access the allocated type, which addresses a common alternative.
+- The most glaring omission is the lack of any evidence behind the claim of implementation experience, leaving the practical viability of the proposal unsubstantiated.
+- The paper does not identify who would be affected by the change or discuss coordination with other proposals and implementations.

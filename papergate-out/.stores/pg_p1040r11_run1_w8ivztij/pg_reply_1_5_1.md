@@ -1,0 +1,2 @@
+SCORE: 1
+QUOTE: The intent of the wording is to provide a `consteval` function and a preprocessor directive that: - whitelists a given file or a set of files for use with the `consteval` `std::embed` function

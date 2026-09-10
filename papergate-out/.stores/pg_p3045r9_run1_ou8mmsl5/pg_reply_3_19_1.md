@@ -1,0 +1,2 @@
+SCORE: 2
+QUOTE: This is why we need to introduce a new type. Such type should: - satisfy structural type requirements, - be equality comparable and potentially totally ordered, - store and provide concatenation support for zero-ended strings, - provide storage that, if set at compile time, would also be available for read-only access at runtime, - provide at least read-only access to the contained storage.

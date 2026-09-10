@@ -1,0 +1,1 @@
+Quantifies the usage or the size of the affected audience: counts, percentages, survey results, named codebases, download or telemetry figures, poll outcomes. Qualitative claims that something is 'common', 'widespread' or 'frequently requested', with no figure attached, do not count.

@@ -1,8 +1,7 @@
 Verdict: Strong (9/14)
 
-The paper gives concrete evidence of prior art, implementation experience, and considered design alternatives, but it does not directly argue why this belongs in the standard rather than remaining a library facility. The thinnest part is the justification for standardization itself: the disadvantages of a library-only approach are asserted without explanation, and there is no discussion of coordination with existing standard library conventions or interoperability concerns.
+The paper gives concrete evidence for implementation experience, prior art, and real-world usage, but it does not directly argue why this belongs in the C++ standard rather than remaining a library facility. The thinnest part of the case is the absence of any discussion of standardization rationale, coordination, or interoperability concerns.
 
-- The strongest support comes from the linked implementation with tests and usage examples, which shows the feature is real and usable.
-- The mention of similar functionality in Meta’s Folly library provides useful evidence that the need arises in practice.
-- The discussion of alternative names shows some design thought, though it does not by itself justify standardization.
-- The most glaring omission is the unsupported claim that a library approach has disadvantages, leaving the central question of why the standard should adopt this unaddressed.
+- The strongest support comes from the linked implementation with tests and usage examples, which shows the design is workable in practice.
+- The paper also grounds the feature in existing practice by citing Folly and Python’s `get`, with named alternatives considered.
+- The most glaring omission is that the paper never addresses why the standard should adopt this rather than leaving it to libraries, beyond a brief assertion about interface intuitiveness.

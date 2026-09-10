@@ -1,8 +1,8 @@
-Verdict: Strong (9/14)
+Verdict: Strong (11/14, close to Excellent)
 
-The paper gives a partial account of why the proposed interface might be useful, but it does not build a complete case for standardization. The strongest material concerns existing practice and the shortcomings of the current API, while the argument thins considerably around why a library solution is insufficient and how the change would fit into the standard.
+The paper gives a reasonably concrete account of the problem and points to existing practice, but it does not fully close the loop on why this belongs in the standard rather than in a library. The strongest material concerns naming, implementation experience, and the awkwardness of current map access patterns; the thinnest concerns coordination with other proposals and the claim that a non-member function would be insufficient.
 
-- The paper points to a concrete existing implementation in Folly, which gives some evidence of real-world use and prior art.
-- It identifies specific ergonomic limitations of the current associative container index operator, grounding the motivation in observable behavior.
-- The claim that a global function is less intuitive is asserted without elaboration, leaving the central library-versus-language question largely unexamined.
-- The paper does not address coordination, interoperability, or why the standard is the right venue, which are notable gaps for a proposal seeking language or standard-library change.
+- The paper grounds its motivation in specific usability problems with `find` and supports the design with a named, linked implementation in Folly.
+- It explains why the standard is a plausible home by emphasizing ease of specification and applicability to future containers such as `flat_map`.
+- The discussion of naming alternatives shows some design deliberation, though it does not by itself justify standardization.
+- The rejection of a library-only solution is asserted rather than argued, leaving the case for a standard member function weaker than it could be.

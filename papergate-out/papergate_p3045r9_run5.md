@@ -1,8 +1,7 @@
 Verdict: Excellent (14/14)
 
-The paper makes a reasonably well-supported case for standardization, drawing on concrete production feedback, implementation experience, and comparisons with existing libraries to justify both the problem and the need for a standard solution. The support is thinnest where the document leans on the same production example to cover multiple distinct argument categories, which makes the breadth of evidence feel narrower than it first appears.
+The paper offers substantial, concrete support for standardizing its proposed vocabulary types, drawing on production safety incidents, comparisons with existing libraries, and a clear account of why current standard facilities fall short. The support is thinnest where it relies on anecdotal or external claims rather than demonstrating how the proposed design would integrate with the existing standard library or committee direction.
 
-- The strongest support comes from concrete implementation experience, including a real GitHub issue that shaped the library’s customization points.
-- The discussion of prior art is specific and useful, showing how Boost.Units, nholthaus/units, Pint, and JSR 385 each handle the same example differently.
-- The explanation of why a library will not do is grounded in concrete technical limitations of `std::ratio`, such as overflow and irrational factors.
-- The most glaring omission is the lack of distinct evidence for coordination and interoperability, since the paper reuses the same production feedback example already cited for why the feature matters.
+- The strongest support comes from specific, high-stakes failure examples and production feedback that tie the feature directly to preventing real-world bugs.
+- The paper also makes a compelling case against relying on existing libraries or `std::ratio` by identifying concrete technical limitations.
+- The most glaring omission is a detailed discussion of how the proposal would coordinate with or build upon existing standardization efforts and library conventions beyond a brief interoperability example.

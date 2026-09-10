@@ -1,0 +1,2 @@
+SCORE: 2
+QUOTE: Contrast with the best we can realistically do presently: ... The second example results in a separate function for each format string (which is, say, one per log statement). The expression alias provably never instantiates different function bodies for different format strings.

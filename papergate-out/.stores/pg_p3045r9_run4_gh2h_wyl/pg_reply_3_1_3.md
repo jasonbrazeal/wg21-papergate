@@ -1,0 +1,2 @@
+SCORE: 2
+QUOTE: "This paper is authored by the [[mp-units]](https://mpusz.github.io/mp-units) library developers, the authors of other actively maintained similar libraries on the market, and other active members of the C++ physical quantities and units community"
