@@ -4,6 +4,8 @@
 #     "marimo",
 #     "matplotlib>=3.9",
 #     "numpy>=2",
+#     "playwright>=1.40",
+#     "nbconvert[webpdf]",
 # ]
 # ///
 
@@ -16,6 +18,7 @@ app = marimo.App(width="medium")
 @app.cell
 def _():
     import re
+    import sqlite3
     import statistics
     from collections import Counter
     from dataclasses import dataclass
@@ -26,7 +29,7 @@ def _():
     import numpy as np
     from matplotlib.axes import Axes
 
-    return Axes, Counter, Path, dataclass, mo, np, plt, re, statistics
+    return Axes, Counter, Path, dataclass, mo, np, plt, re, sqlite3, statistics
 
 
 @app.cell
@@ -44,13 +47,13 @@ def _(mo):
         label="Report directory",
         full_width=True,
     )
-    log_input = mo.ui.text(
-        value="/mnt/VM/papergate/batch-run.log",
-        label="Batch log (stdout/stderr capture of batch-papergate-joaquin.py)",
+    db_input = mo.ui.text(
+        value="/mnt/.utm-share/CppAlliance/dev/wg21-paperflow/data/paperstore.db",
+        label="Paperstore DB (expected paper list)",
         full_width=True,
     )
-    mo.vstack([out_dir_input, log_input])
-    return log_input, out_dir_input
+    mo.vstack([out_dir_input, db_input])
+    return db_input, out_dir_input
 
 
 @app.cell
@@ -129,93 +132,32 @@ def _(Path, dataclass, re):
 
 
 @app.cell
-def _(Path, dataclass, re):
-    PROGRESS_RE = re.compile(
-        r"^\[(?P<done>\d+)/(?P<total>\d+)\]\s+(?P<pid>\S+)\s+"
-        r"run(?P<run>\d+):\s+(?P<status>ok|FAILED)\s+\((?P<msg>.*)\)"
-        r"\s+-\s+elapsed\b"
-    )
-    SUCCEEDED_RE = re.compile(r"^(?P<ok>\d+)/(?P<total>\d+) succeeded\s*$")
-    FAILED_RE = re.compile(
-        r"^\s*failed:\s+(?P<pid>\S+)\s+run(?P<run>\d+):\s*(?P<reason>.*)$"
-    )
-
-    @dataclass
-    class Failure:
-        pid: str
-        run_no: int
-        reason: str
-
-    @dataclass
-    class LogSummary:
-        total: int
-        succeeded: int
-        failures: list[Failure]
-
-    def parse_batch_log(log_path: Path) -> LogSummary:
-        """Extract run counts and failures from a batch-papergate-joaquin log.
-
-        The final "<ok>/<total> succeeded" line and the "failed:" lines that
-        follow it are authoritative. If the log has no summary (e.g. the run
-        was interrupted), FAILED progress lines are used instead.
-        """
-        lines = log_path.read_text(errors="replace").splitlines()
-        summary_idx: int | None = None
-        total = 0
-        succeeded = 0
-        for idx, line in enumerate(lines):
-            match = SUCCEEDED_RE.match(line)
-            if match:
-                summary_idx = idx
-                succeeded = int(match.group("ok"))
-                total = int(match.group("total"))
-        failures: list[Failure] = []
-        if summary_idx is not None:
-            for line in lines[summary_idx + 1:]:
-                match = FAILED_RE.match(line)
-                if match:
-                    failures.append(
-                        Failure(
-                            pid=match.group("pid"),
-                            run_no=int(match.group("run")),
-                            reason=re.sub(r"\s+", " ",
-                                          match.group("reason")).strip(),
-                        )
-                    )
-        else:
-            seen: dict[tuple[str, int], Failure] = {}
-            for line in lines:
-                match = PROGRESS_RE.match(line)
-                if match:
-                    total = int(match.group("total"))
-                    if match.group("status") == "FAILED":
-                        key = (match.group("pid"), int(match.group("run")))
-                        seen[key] = Failure(
-                            pid=key[0],
-                            run_no=key[1],
-                            reason=re.sub(r"\s+", " ",
-                                          match.group("msg")).strip(),
-                        )
-            failures = list(seen.values())
-            succeeded = max(0, total - len(failures))
-        return LogSummary(total=total, succeeded=succeeded,
-                          failures=failures)
-
-    return LogSummary, parse_batch_log
+def _(Path, load_runs, out_dir_input):
+    runs = load_runs(Path(out_dir_input.value))
+    return (runs,)
 
 
 @app.cell
-def _(Path, load_runs, log_input, out_dir_input, parse_batch_log):
-    out_dir = Path(out_dir_input.value)
-    log_path = Path(log_input.value)
-    runs = load_runs(out_dir)
+def _(Path, db_input, sqlite3):
+    """Expected paper list, queried exactly like batch-papergate-joaquin.py."""
+    db_error: str | None = None
+    expected_pids: list[str] = []
     try:
-        log_summary = parse_batch_log(log_path)
-        log_error: str | None = None
-    except FileNotFoundError:
-        log_summary = None
-        log_error = f"batch log not found: {log_path}"
-    return log_error, log_summary, runs
+        conn = sqlite3.connect(f"file:{db_input.value}?mode=ro", uri=True)
+        try:
+            paper_rows = conn.execute(
+                "SELECT paper_id, markdown_path FROM papers "
+                "WHERE year = '2026' AND markdown_path != '' "
+                "ORDER BY paper_id"
+            ).fetchall()
+        finally:
+            conn.close()
+    except (OSError, sqlite3.Error) as exc:
+        db_error = f"paperstore DB unreadable: {exc}"
+    else:
+        expected_pids = [pid for pid, md in paper_rows
+                         if Path(md).is_file()]
+    return db_error, expected_pids
 
 
 @app.cell
@@ -279,24 +221,41 @@ def _(Run, dataclass, statistics):
 
 
 @app.cell
-def _(paper_stats, runs):
+def _(expected_pids, paper_stats, runs):
     stats = paper_stats(runs)
     good_runs = [r for r in runs if r.parse_error is None]
     scored_runs = [r for r in good_runs if r.score is not None]
     na_runs = [r for r in good_runs if r.is_na]
     parse_errors = [r for r in runs if r.parse_error is not None]
-    return good_runs, na_runs, parse_errors, scored_runs, stats
+    expected_runs = max(r.run_no for r in runs)
+    present_pids = {p.pid for p in stats}
+    missing_by_pid = {
+        p.pid: sorted(set(range(1, expected_runs + 1))
+                      - {r.run_no for r in p.runs})
+        for p in stats
+    }
+    for pid in expected_pids:
+        if pid not in present_pids:
+            missing_by_pid[pid] = list(range(1, expected_runs + 1))
+    missing_by_pid = {pid: m for pid, m in sorted(missing_by_pid.items())
+                      if m}
+    n_missing = sum(len(m) for m in missing_by_pid.values())
+    n_expected_papers = len(expected_pids) if expected_pids else len(stats)
+    return (expected_runs, good_runs, missing_by_pid, n_expected_papers,
+            n_missing, na_runs, parse_errors, scored_runs, stats)
 
 
 @app.cell
 def _(
     Counter,
+    db_error,
+    expected_runs,
     good_runs,
-    log_error: str | None,
-    log_summary,
+    missing_by_pid,
     mo,
     na_runs,
-    parse_errors,
+    n_expected_papers,
+    n_missing,
     runs,
     scored_runs,
     statistics,
@@ -307,20 +266,25 @@ def _(
         f"{n} runs x {c} papers" for n, c in sorted(run_counts.items())
     )
     scores = [r.score for r in scored_runs]
-    if log_summary is not None:
-        log_line = (
-            f"batch log: **{log_summary.succeeded}/{log_summary.total}** "
-            f"runs succeeded, **{len(log_summary.failures)}** failed"
+    if db_error is None:
+        expected_line = (
+            f"expected: **{n_expected_papers * expected_runs}** report "
+            f"files across **{n_expected_papers}** papers "
+            f"({expected_runs} runs x {n_expected_papers} papers, "
+            f"from paperstore DB)"
         )
     else:
-        log_line = f"batch log unavailable — {log_error}"
+        expected_line = (
+            f"expected: unknown — paperstore DB unreadable "
+            f"({db_error}); papers with zero reports are invisible"
+        )
     mo.md(
         f"""
         ## Batch overview
 
-        - {log_line}
         - **{len(runs)}** report files across **{len(stats)}** papers ({runs_per_paper})
-        - parse errors: **{len(parse_errors)}**
+        - {expected_line}
+        - missing: **{n_missing}** across **{len(missing_by_pid)}** papers
         - n/a verdicts: **{len(na_runs)}** ({100 * len(na_runs) / len(good_runs):.1f}% of parsed) — paper triaged as not a standardization proposal, so the criteria were not applied
         - score (x/{scored_runs[0].max_score}) over {len(scores)} scored runs: min {min(scores)}, max {max(scores)}, mean {statistics.fmean(scores):.2f}, median {statistics.median(scores):.0f}, stdev {statistics.pstdev(scores):.2f}
 
@@ -577,52 +541,59 @@ def _(fmt_verdict, inconsistent, mo):
 
 
 @app.cell
-def _(Axes, LogSummary, THEME, log_error: str | None, log_summary, mo, plt):
-    def draw_pie(ax: Axes, summary: LogSummary) -> None:
-        n_failed = len(summary.failures)
-        ax.pie(
-            [summary.succeeded, n_failed],
-            labels=[f"succeeded\n{summary.succeeded}", f"failed\n{n_failed}"],
-            colors=[THEME["green"], THEME["red"]],
-            autopct=lambda pct: f"{pct:.1f}%",
-            startangle=90,
-            wedgeprops={"edgecolor": "#ffffff", "linewidth": 2},
-        )
-        ax.set_title(f"Attempted runs ({summary.total})")
-
-    if log_summary is None:
-        pie_out = mo.md(f"_Failure breakdown unavailable — {log_error}_")
-    else:
-        pie_out, ax_pie = plt.subplots(figsize=(5, 4))
-        draw_pie(ax_pie, log_summary)
-        pie_out.tight_layout()
+def _(THEME, expected_runs, mo, n_expected_papers, n_missing, plt, runs):
+    n_present = len(runs)
+    n_expected = n_expected_papers * expected_runs
+    pie_out, ax_pie = plt.subplots(figsize=(5, 4))
+    ax_pie.pie(
+        [n_present, n_missing],
+        labels=[f"reports present\n{n_present}", f"missing\n{n_missing}"],
+        colors=[THEME["green"], THEME["red"]],
+        autopct=lambda pct: f"{pct:.1f}%",
+        startangle=90,
+        wedgeprops={"edgecolor": "#ffffff", "linewidth": 2},
+    )
+    ax_pie.set_title(
+        f"Expected runs ({n_expected} = {n_expected_papers} papers "
+        f"x {expected_runs} runs)"
+    )
+    pie_out.tight_layout()
     pie_out
     return
 
 
 @app.cell
-def _(log_summary, mo, stats):
-    if log_summary is None or not log_summary.failures:
-        failure_table = mo.md("")
-    else:
-        reports_by_pid = {p.pid: len(p.runs) for p in stats}
-
-        def md_escape(text: str) -> str:
-            return text.replace("|", "\\|")
-
-        rows = [
-            f"| {f.pid} | {f.run_no} | {reports_by_pid.get(f.pid, 0)} "
-            f"| ``{md_escape(f.reason)}`` |"
-            for f in sorted(log_summary.failures,
-                            key=lambda f: (f.pid, f.run_no))
-        ]
-        failure_table = mo.md(
-            "## Failed runs (from batch log)\n\n"
-            "| Paper | Run | Reports on disk | Reason |\n"
-            "|-------|----:|----------------:|--------|\n"
-            + "\n".join(rows)
+def _(db_error, expected_runs, missing_by_pid, mo, n_expected_papers):
+    if db_error is None:
+        source_note = (
+            f"Expected paper list from the paperstore DB "
+            f"({n_expected_papers} papers); {expected_runs} runs per "
+            f"paper (from max run number)."
         )
-    failure_table
+    else:
+        source_note = (
+            f"Paperstore DB unreadable ({db_error}) — only papers with "
+            f"at least one report are considered."
+        )
+    if not missing_by_pid:
+        missing_table = mo.md(
+            f"## Missing runs\n\nAll expected reports are present. "
+            f"{source_note}"
+        )
+    else:
+        miss_rows = [
+            f"| {pid} | {expected_runs - len(missing)} "
+            f"| {', '.join(str(n) for n in missing)} |"
+            for pid, missing in sorted(missing_by_pid.items())
+        ]
+        missing_table = mo.md(
+            "## Missing runs (no report file on disk)\n\n"
+            f"{source_note}\n\n"
+            "| Paper | Reports on disk | Missing run numbers |\n"
+            "|-------|----------------:|---------------------|\n"
+            + "\n".join(miss_rows)
+        )
+    missing_table
     return
 
 
