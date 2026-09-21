@@ -1,13 +1,18 @@
 ---
 name: papergate
 description: Report on the evidence a WG21 paper provides for its need of standardization
-promptforge: 1
+promptforge: 0
 input:
   path: paper.md
   description: The WG21 paper markdown to analyze
 output:
   path: report.md
   description: The report produced by analysis
+models:
+  writer:
+    keywords: [no-thinking]
+    min_context: 32768
+    description: A careful analysis model suited to structured reasoning and long-context review
 ---
 
 # Papergate
@@ -19,9 +24,7 @@ output:
 -- chunk holds the model binding and nothing else. Every other Lua block in
 -- this file is self-contained and passes data through the store.
 
-models.default("writer",
-    "A careful analysis model suited to structured reasoning and long-context review",
-    { thinking = false, temperature = 0.3, context = 32768 })
+models.default("writer")
 ```
 
 ## Assess
@@ -436,6 +439,7 @@ local max_points = 2 * ncrit
 
 -- --- triage verdict from this section's own model turn ----------------------
 
+local reply = models.infer(prose)
 local is_proposal = not (reply or ""):upper():find("NOT_PROPOSAL", 1, true)
 
 -- --- one job per criterion, per chunk, per sample ---------------------------
@@ -931,6 +935,7 @@ QUOTE: <verbatim quote, or leave empty when the score is 0>
 ```
 
 ```lua
+local reply = models.infer(prose)
 store.write("pg_reply_" .. item:gsub("|", "_") .. ".md", reply)
 ```
 
@@ -971,6 +976,7 @@ local function read_or_empty(path)
     return ""
 end
 
+local reply = models.infer(prose)
 local body = (reply or ""):gsub("^%s+", ""):gsub("%s+$", "")
 
 local verdict_line = read_or_empty("verdict.md")
