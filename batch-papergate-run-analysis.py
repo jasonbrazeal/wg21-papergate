@@ -43,12 +43,12 @@ def _(mo):
 @app.cell
 def _(mo):
     out_dir_input = mo.ui.text(
-        value="/mnt/VM/papergate/papergate-out",
+        value="/code/wg21-papergate/papergate-out",
         label="Report directory",
         full_width=True,
     )
     db_input = mo.ui.text(
-        value="/mnt/.utm-share/CppAlliance/dev/wg21-paperflow/data/paperstore.db",
+        value="/code/wg21-paperflow/data/paperstore.db",
         label="Paperstore DB (expected paper list)",
         full_width=True,
     )

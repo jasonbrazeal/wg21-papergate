@@ -3,11 +3,11 @@
 in the paperstore, N runs each (default 5).
 
 Starts one promptforge-gateway for the whole batch and tears it down at the
-end. Per run: seed a per-run store dir with the paper's markdown as
-paper.md, invoke `promptforge run papergate-joaquin.md --store <dir>`, then
-move the resulting report.md to papergate_<pid>_run<N>.md in the output
-directory. Credentials live only in the process environment: the gateway
-bearer is generated per invocation and VLLM_DEEPSEEK_API_KEY is inherited.
+end. Per run: invoke `promptforge run` with the paper's markdown seeded into
+the run's store as paper.md (--input) and the store's report.md extracted to
+papergate_<pid>_run<N>.md in the output directory (--output). Credentials
+live only in the process environment: the gateway bearer is generated per
+invocation and VLLM_DEEPSEEK_API_KEY is inherited.
 
 Gateway output goes to <out-dir>/gateway.log, not the terminal. Ctrl-C
 terminates in-flight runs immediately; completed outputs are kept, so
@@ -19,11 +19,9 @@ from __future__ import annotations
 import argparse
 import os
 import secrets
-import shutil
 import sqlite3
 import subprocess
 import sys
-import tempfile
 import threading
 import time
 import urllib.error
@@ -31,11 +29,16 @@ import urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
-PROMPT_DEFAULT = "/mnt/VM/papergate/papergate-joaquin-v4.md"
+PROMPT_DEFAULT = "/code/wg21-papergate/papergate-joaquin-v4.md"
 PROMPTFORGE_BIN_DEFAULT = "/code/promptforge-cli/target/debug/promptforge"
-GATEWAY_BIN_DEFAULT = "/code/promptforge-nightly/target/debug/promptforge-gateway"
-GATEWAY_CONFIG_DEFAULT = Path.home() / ".promptforge" / "gateway.toml"
+GATEWAY_BIN_DEFAULT = "/code/promptforge/target/release/promptforge-gateway"
+GATEWAY_CONFIG_DEFAULT = Path("/code/wg21-papergate/gateway.toml")
 GATEWAY_URL_DEFAULT = "http://127.0.0.1:8081/v1"
+
+# Store files --keep-stores pulls out alongside the report, for debugging a
+# run after the fact. Every one of these is written unconditionally by the
+# prompt; asking for a file the run never wrote fails the whole run.
+DEBUG_OUTPUTS = ("verdict.md", "evidence.md", "diagnostics.md")
 
 # In-flight `promptforge run` processes, tracked so Ctrl-C can kill them
 # immediately instead of waiting for the executor to drain.
@@ -105,14 +108,25 @@ def run_one(prompt: Path, pid: str, run_no: int, md_path: Path, out_dir: Path,
     if interrupted.is_set():
         return pid, run_no, False, "interrupted"
 
-    store_dir = Path(tempfile.mkdtemp(prefix=f"pg_{pid.lower()}_run{run_no}_",
-                                      dir=out_dir / ".stores"))
+    # The run's store lives inside the engine, not on disk: the paper goes in
+    # through --input under the name the prompt reads, and every file worth
+    # keeping comes back out through --output. The report lands on a .partial
+    # path first so an interrupted copy can never look like a finished run to
+    # the skip-if-exists check above.
+    partial = out_file.with_name(out_file.name + ".partial")
+    cmd = [str(promptforge_bin), "run",
+           "--input", f"paper.md={md_path}",
+           "--output", f"report.md={partial}"]
+    if keep_stores:
+        debug_dir = out_dir / ".stores" / f"pg_{pid.lower()}_run{run_no}"
+        debug_dir.mkdir(parents=True, exist_ok=True)
+        for name in DEBUG_OUTPUTS:
+            cmd += ["--output", f"{name}={debug_dir / name}"]
+    cmd.append(str(prompt))
+
+    print(f"  started {pid} run{run_no}", flush=True)
+    last_err = ""
     try:
-        shutil.copyfile(md_path, store_dir / "paper.md")
-        cmd = [str(promptforge_bin), "run", "--store", str(store_dir),
-               str(prompt)]
-        print(f"  started {pid} run{run_no}", flush=True)
-        last_err = ""
         for attempt in range(1 + retries):
             if interrupted.is_set():
                 return pid, run_no, False, "interrupted"
@@ -128,14 +142,23 @@ def run_one(prompt: Path, pid: str, run_no: int, md_path: Path, out_dir: Path,
                 last_err = f"timeout after {timeout}s"
             else:
                 if proc.returncode == 0:
-                    report = store_dir / "report.md"
-                    if report.is_file():
-                        shutil.move(str(report), str(out_file))
+                    if partial.is_file():
+                        partial.replace(out_file)
                         return pid, run_no, True, "ok"
                     last_err = "run succeeded but report.md was not produced"
                 else:
+                    # The whole of stderr goes to a file, because the useful
+                    # message is often several lines above the traceback tail
+                    # a one-line summary would keep: a fanout arm that dies
+                    # reports the abort, not the cause.
                     lines = (stderr or "").strip().splitlines()
                     last_err = lines[-1] if lines else f"rc={proc.returncode}"
+                    if stderr:
+                        err_dir = out_dir / ".errors"
+                        err_dir.mkdir(parents=True, exist_ok=True)
+                        err_file = err_dir / f"{pid.lower()}_run{run_no}.err"
+                        err_file.write_text(stderr, encoding="utf-8")
+                        last_err = f"{last_err} [full stderr: {err_file}]"
             finally:
                 with active_lock:
                     active_procs.discard(proc)
@@ -143,8 +166,7 @@ def run_one(prompt: Path, pid: str, run_no: int, md_path: Path, out_dir: Path,
                 time.sleep(5 * (attempt + 1))
         return pid, run_no, False, last_err
     finally:
-        if not keep_stores:
-            shutil.rmtree(store_dir, ignore_errors=True)
+        partial.unlink(missing_ok=True)
 
 
 def main() -> int:
@@ -161,7 +183,8 @@ def main() -> int:
     ap.add_argument("--timeout", type=int, default=1800, help="seconds per run")
     ap.add_argument("--retries", type=int, default=2)
     ap.add_argument("--keep-stores", action="store_true",
-                    help="keep per-run store dirs for debugging")
+                    help=f"also extract {', '.join(DEBUG_OUTPUTS)} per run "
+                         f"into <out-dir>/.stores/ for debugging")
     ap.add_argument("--promptforge-bin", type=Path,
                     default=Path(PROMPTFORGE_BIN_DEFAULT))
     ap.add_argument("--gateway-bin", type=Path, default=Path(GATEWAY_BIN_DEFAULT))
@@ -176,6 +199,10 @@ def main() -> int:
         ap.error("paperstore.db not found; set --data-dir or $WG21_DATA_DIR")
     if not args.prompt.is_file():
         ap.error(f"prompt not found: {args.prompt}")
+    for label, binary in (("promptforge", args.promptforge_bin),
+                          ("gateway", args.gateway_bin)):
+        if not os.access(binary, os.X_OK):
+            ap.error(f"{label} binary not executable: {binary}")
     if not os.environ.get("VLLM_DEEPSEEK_API_KEY"):
         ap.error("VLLM_DEEPSEEK_API_KEY is not set; the gateway needs it "
                  "for the RunPod endpoint")
@@ -197,13 +224,12 @@ def main() -> int:
     # this process and its children. Gateway output goes to a log file so its
     # progress bar and INFO lines never drown the run progress below.
     args.out_dir.mkdir(parents=True, exist_ok=True)
-    (args.out_dir / ".stores").mkdir(exist_ok=True)
     gw_log_path = args.out_dir / "gateway.log"
     gw_log = open(gw_log_path, "w")
     token = secrets.token_hex(16)
     gateway_proc = subprocess.Popen(
-        [str(args.gateway_bin), "serve", str(args.gateway_config),
-         "--profile", args.gateway_profile],
+        [str(args.gateway_bin), "--config", str(args.gateway_config),
+         "--profile", args.gateway_profile, "--no-tray"],
         env=dict(os.environ, PROMPTFORGE_GATEWAY_API_KEY=token),
         stdout=gw_log, stderr=subprocess.STDOUT)
     failures: list[tuple[str, int, str]] = []
