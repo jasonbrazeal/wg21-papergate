@@ -42,13 +42,20 @@ def _(mo):
 
 @app.cell
 def _(mo):
+    # Where the reports are. The current corpus is the one the batch writes
+    # to now; swap the comment to read an earlier one instead, or just type a
+    # path into the box below.
+    OUT_DIR = "/code/wg21-papergate/papergate-out"
+    # OUT_DIR = "/code/wg21-papergate/papergate-out-v1"  # 2925 reports, prompt v1
+    DB_PATH = "/code/wg21-paperflow/data/paperstore.db"
+
     out_dir_input = mo.ui.text(
-        value="/code/wg21-papergate/papergate-out",
+        value=OUT_DIR,
         label="Report directory",
         full_width=True,
     )
     db_input = mo.ui.text(
-        value="/code/wg21-paperflow/data/paperstore.db",
+        value=DB_PATH,
         label="Paperstore DB (expected paper list)",
         full_width=True,
     )
@@ -132,14 +139,22 @@ def _(Path, dataclass, re):
 
 
 @app.cell
-def _(Path, load_runs, out_dir_input):
+def _(Path, load_runs, mo, out_dir_input):
     runs = load_runs(Path(out_dir_input.value))
+    # Every cell below reads `runs`, and all of them divide by some count of
+    # it, so an empty directory is reported once here rather than as an
+    # arithmetic error further down.
+    mo.stop(
+        not runs,
+        mo.md(f"No reports in `{out_dir_input.value}` yet. Run the batch, or "
+              f"point the box above at a directory that has some."),
+    )
     return (runs,)
 
 
 @app.cell
 def _(Path, db_input, sqlite3):
-    """Expected paper list, queried exactly like batch-papergate-joaquin.py."""
+    """Expected paper list, queried exactly like batch-papergate.py."""
     db_error: str | None = None
     expected_pids: list[str] = []
     try:
