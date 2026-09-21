@@ -31,9 +31,9 @@ import urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
-PROMPT_DEFAULT = "/mnt/VM/papergate/papergate-joaquin.md"
-PROMPTFORGE_BIN_DEFAULT = "/code/promptforge/target/debug/promptforge"
-GATEWAY_BIN_DEFAULT = "/code/promptforge/target/debug/promptforge-gateway"
+PROMPT_DEFAULT = "/mnt/VM/papergate/papergate-joaquin-v4.md"
+PROMPTFORGE_BIN_DEFAULT = "/code/promptforge-cli/target/debug/promptforge"
+GATEWAY_BIN_DEFAULT = "/code/promptforge-nightly/target/debug/promptforge-gateway"
 GATEWAY_CONFIG_DEFAULT = Path.home() / ".promptforge" / "gateway.toml"
 GATEWAY_URL_DEFAULT = "http://127.0.0.1:8081/v1"
 
