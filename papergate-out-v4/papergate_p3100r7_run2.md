@@ -1,0 +1,8 @@
+Verdict: Strong (9/14)
+
+The paper gives a reasonably grounded account of why checkable undefined behavior matters and who would be affected, but it does not persuade on the points that would justify a standards change rather than a library or vendor extension. The thinnest support is in the arguments that this requires standardization, that existing tools can interoperate with the proposed design, and that implementation experience is demonstrably relevant.
+
+- The strongest material shows that productive replacement behavior is possible only for a small share of UB cases, while nearly all cases could in principle be diagnosed with runtime checks, supporting the paper’s claim that the problem is widespread and distinct from a niche concern.
+- The paper is also on solid ground in framing the proposal as building on Contracts as adopted for C++26, though that does not by itself establish that standardization of this particular mechanism is necessary rather than merely consistent with existing direction.
+- The claim that the solution cannot be done as a library, or that tools would meaningfully integrate through a standard contract-violation-handling API, is asserted more than demonstrated, with the cited sanitizer callback weakness offering little evidence about what a standard API would improve in practice.
+- The paper’s most glaring omission is a convincing account of implementation experience specific to this design: broad references to deployed instrumentation and one compiler flag do not show that the proposed behavior and its integration model have been tried, measured, or accepted in real use.

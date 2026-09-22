@@ -1,0 +1,8 @@
+Verdict: Adequate (7/14, close to Strong)
+
+The paper’s strongest case rests on the irreplaceability of `when_all` inside coroutine bodies and on its survey of prior designs, but much of the surrounding argument—who is affected, why the standard should act, and what implementation experience shows—depends on claims that are asserted rather than demonstrated. The thinnest support is around the need for standardization itself: the paper argues the problem and sketches a direction, but does not establish that the proposed domain-aware combinators are the necessary standardization response rather than a library solution.
+
+- The paper firmly establishes that I/O errors arriving on the value channel make sender error-handling combinators invisible to the combinator, and that `when_all` is the one concurrency combinator a coroutine body cannot replace with ordinary sequential code.
+- The prior-art section is the most fully developed, showing both a concrete alternative design and a reasoned comparison of strategies for routing I/O results through the three-channel model.
+- The argument that a library cannot do this leans on assertions about HALO limitations and the absence of `co_yield with_error` in P3552R3, but the paper does not establish that these barriers require standardization rather than a non-standard library or an independent language change.
+- The most glaring omission is implementation experience: the only non-anecdotal evidence is a link to an implementation, with no reported deployment, testing, or production use that would show the design works outside its motivating examples.

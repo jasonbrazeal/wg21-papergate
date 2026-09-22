@@ -1,0 +1,8 @@
+Verdict: Adequate (7/14, close to Strong)
+
+The paper provides genuine, concrete evidence of implementation experience, with a reference implementation that has existed throughout the standardization process and credible production use at Citadel Securities. Beyond that, however, the supporting case is largely asserted rather than demonstrated: the relevance to affected users rests on a handful of signals like GitHub stars and a single architect’s informal estimate, while the arguments for prior art, the need for a standard, coordination, and the insufficiency of library-only approaches are mostly framed claims that lack the independent corroboration or detailed analysis the earlier sections begin to suggest.
+
+- The strongest support is the implementation experience: `stdexec` is a long-lived reference implementation, and a named production user has publicly described relying on `std::execution` for significant infrastructure.
+- The paper’s case for why the problem matters is thin but present, leaning on the tension between C++20 coroutines and the C++26 sender model, and on the observation that a major GPU compiler does not support coroutines in device code.
+- The most glaring omission is any established demonstration of who is actually affected beyond a small set of signals—stars, one informal percentage estimate, and a single production report—which is not enough to make the population of affected users clear.
+- The sections on alternatives, the need for standardization, coordination and interoperability, and why a library will not suffice are all claimed but not established, leaving the paper without a developed argument for why this belongs in the standard rather than in a library.

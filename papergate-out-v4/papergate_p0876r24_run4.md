@@ -1,0 +1,8 @@
+Verdict: Strong (8/14)
+
+The paper provides a reasonable foundation for why `fiber_context` cannot be implemented portably and shows documented implementation experience, but it leaves several essential parts of the standardization case asserted rather than demonstrated, particularly around who is affected, why the Standard is the right home, and how the facility would coordinate with existing systems. The strongest support is found in the discussion of prior art and the concrete evidence of real implementations and performance, while the thinnest areas concern the breadth and nature of the affected user base and the benefits of standardizing rather than relying on the existing library ecosystem.
+
+- The paper’s treatment of prior art and alternatives is its most solid contribution, showing clear continuity with earlier proposals and acknowledging the existing Boost.Context foundation.
+- Implementation experience is credibly established through concrete performance data, a known constexpr evaluator use case, and identification of existing higher-level libraries built on the proposed API.
+- The claim that the facility cannot be written in portable C++ is used to justify both the need for standardization and the inadequacy of a library-only solution, but the paper does not fully develop the library-alternative argument beyond that assertion.
+- The most glaring omission is the lack of established evidence about who is affected; the paper names libraries and gives a deployment figure, but does not connect those to a demonstrated need for the standard facility as opposed to continued use of Boost.Context.

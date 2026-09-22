@@ -1,0 +1,8 @@
+Verdict: Strong (9/14)
+
+The paper offers a reasonably grounded case on the core technical motivation and the inadequacy of existing library-level or static-analysis alternatives, but its argument for why this needs to be a language feature is much thinner on evidence of actual use, affected users, and interoperability. The strongest support concerns the demonstrated existence of compiler-assisted implementations and the clear limitations of current assertions, while the least developed parts are the claims about who is affected and how the feature would coordinate with existing tools and industries.
+
+- The paper most convincingly shows that existing mechanisms like `static_assert`, `assert`, and compiler attributes do not provide the desired control-flow-based compile-time checking, and that a compiler-centered approach has working implementation experience across the three major compilers.
+- It also establishes clearly why a library cannot reliably fill the gap, since portable pre-existing macros evaluate too early and separate static analysis tools cannot be assumed to mirror the compiler’s reachability decisions.
+- The paper’s claim about who is affected rests mainly on a published macro and reference implementation, but does not demonstrate meaningful adoption, production experience, or concrete impact on programmers at scale.
+- The most glaring omission is the lack of an established case for standardization itself: the paper asserts portability, integration with existing workflows, and relevance to safety-critical domains, but does not show coordination with other standards efforts, toolchains, or how the feature would fit into the broader C and C++ ecosystem.

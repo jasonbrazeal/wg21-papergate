@@ -1,0 +1,2 @@
+error: http transport failure
+  caused by: completion stream reported an error: upstream transport error
