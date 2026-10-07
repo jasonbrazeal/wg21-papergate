@@ -35,7 +35,7 @@ def _():
 @app.cell
 def _(mo):
     mo.md("""
-    # Papergate batch run analysis
+    # Paperweight batch run analysis
     """)
     return
 
@@ -45,7 +45,7 @@ def _(mo):
     # Where the reports are. The current corpus is the one the batch writes
     # to now; swap the comment to read an earlier one instead, or just type a
     # path into the box below.
-    OUT_DIR = "/code/wg21-papergate/papergate-out"
+    OUT_DIR = "/code/wg21-paperflow/data/paperweight-out"
     # OUT_DIR = "/code/wg21-papergate/papergate-out-v1"  # 2925 reports, prompt v1
     DB_PATH = "/code/wg21-paperflow/data/paperstore.db"
 
@@ -66,7 +66,7 @@ def _(mo):
 @app.cell
 def _(Path, dataclass, re):
     LABELS = ["None", "Weak", "Adequate", "Strong", "Excellent"]
-    FILE_RE = re.compile(r"^papergate_([a-z0-9]+)_run(\d+)\.md$")
+    FILE_RE = re.compile(r"^paperweight_([a-z0-9]+)_run(\d+)\.md$")
     VERDICT_RE = re.compile(
         r"^Verdict:\s*(?P<label>n/a|\w+)"
         r"(?:\s*\((?P<score>\d+)\s*/\s*(?P<max>\d+)"
@@ -115,9 +115,9 @@ def _(Path, dataclass, re):
         )
 
     def load_runs(out_dir: Path) -> list[Run]:
-        """Parse every papergate_<pid>_run<N>.md report in out_dir."""
+        """Parse every paperweight_<pid>_run<N>.md report in out_dir."""
         runs: list[Run] = []
-        for path in sorted(out_dir.glob("papergate_*_run*.md")):
+        for path in sorted(out_dir.glob("paperweight_*_run*.md")):
             match = FILE_RE.match(path.name)
             if match:
                 runs.append(
@@ -154,7 +154,7 @@ def _(Path, load_runs, mo, out_dir_input):
 
 @app.cell
 def _(Path, db_input, sqlite3):
-    """Expected paper list, queried exactly like batch-papergate.py."""
+    """Expected paper list, queried exactly like batch-paperweight.py."""
     db_error: str | None = None
     expected_pids: list[str] = []
     try:
