@@ -1,0 +1,184 @@
+Verdict: Strong (10/14)
+
+The paper gives a reasonably strong account of why the current lack of specified layout creates a portability and usability problem, and it is most convincing when explaining the inconsistency between direct `bit_cast` and the well-defined intrinsic path. The support is thinnest where the paper relies on general claims about affected code bases and implementation behavior without concrete evidence or named examples beyond Intel.
+
+- The paper clearly establishes that the absence of a specified object representation makes portable bit reinterpretation impossible in `std::simd`, unlike the intrinsic APIs it is meant to replace.
+- The discussion of prior art and alternatives is well grounded, showing that array-like layout is the de facto expectation across major SIMD targets and existing libraries.
+- The paper does not adequately establish who is affected, since the only concrete user base mentioned is Intel’s internal code, with no broader community or ecosystem evidence.
+- The most glaring omission is implementation experience, because the claim that existing implementations already use array-like layout is asserted without supporting documentation or compiler/library references.
+
+
+<!-- paperweight-diagnostics
+# Diagnostics
+
+Provisional: Strong (10.17/14)
+
+Provisionally addressed: 7 of 7. Provisional points: 10.17 of 14. Unsupported quotes rejected: 0. Replies missing: 0. Sections: 14. Samples: 3.
+
+Intra-section rule: mean of 3 samples. Inter-section rule in force: top2 (existence-asserting criteria always take the max).
+Totals under every inter-section rule: top2 10.17   corroborated 10.33   accumulate 10.50   max 10.33
+
+## SUMMARY
+grades: motivation 2.00  audience 0.33  prior_art 2.00  vehicle 2.00  coordination 2.00  insufficiency 0.83  implementation 1.00
+sample agreement: 86 of 98 section-criterion pairs unanimous (88%)
+single-sample totals would have been: 11.00 / 10.00 / 10.00   (all 3 samples: 10.17)
+headings: h2 13
+on threshold: none
+splits: motivation[8] 0/0/1  motivation[9] 0/1/0  audience[6] 1/0/0  audience[11] 1/0/0
+        prior_art[9] 1/2/2  prior_art[12] 1/0/0  vehicle[13] 0/1/0  coordination[4] 1/1/2
+        insufficiency[5] 1/1/0  insufficiency[10] 0/0/1  insufficiency[11] 1/0/0
+        implementation[6] 0/0/1
+## END SUMMARY
+
+## motivation - grade 2.00 (fired in 10 of 14 sections, strong in 5)  (SHARED PASSAGE)
+under each rule: top2 2.00   corroborated 2.00   accumulate 2.00   max 2.00
+votes by section:
+  [1] (front matter: title, abstract and anythi... 0/0/0  -> 0.00
+  [2] Abstract                                     1/1/1  -> 1.00
+  [3] 1. Revision History                          0/0/0  -> 0.00
+  [4] 2. Introduction                              2/2/2  -> 2.00
+  [5] 3. Motivation                                2/2/2  -> 2.00
+  [6] 4. Proposed Solution 1: Mandate Array-Lik... 2/2/2  -> 2.00
+  [7] 5. Proposed Solution 2: Query Traits         1/1/1  -> 1.00
+  [8] 6. Complementary Use of Both Solutions       0/0/1  -> 0.33
+  [9] 7. Comparison                                0/1/0  -> 0.33
+  [10] 8. Our Recommendation                        2/2/2  -> 2.00
+  [11] 9. Additional Discussion                     2/2/2  -> 2.00
+  [12] 10. Proposed Wording                         0/0/0  -> 0.00
+  [13] 11. Impact on Existing Code                  1/1/1  -> 1.00
+  [14] 12. Future Work                              0/0/0  -> 0.00
+candidate 1 (found by 3 of 42 passes): This prevents portable bit reinterpretation idioms that are widely used in SIMD code and supported by existing intrinsic APIs.
+candidate 2 (found by 3 of 42 passes): Without specifying the layout, such code is not portable across implementations.
+candidate 3 (found by 3 of 42 passes): The indirect path through intrinsics is legal and portable because intrinsics have well-defined bit-reinterpretation semantics. But the direct path is not portable.
+candidate 4 (found by 3 of 42 passes): The current state represents a usability regression compared to existing practice with vendor intrinsics, which have always had well-defined bit-casting semantics.
+
+## audience - grade 0.33 (fired in 2 of 14 sections, strong in 0)  (SHARED PASSAGE)
+under each rule: top2 0.33   corroborated 0.33   accumulate 0.33   max 0.33
+votes by section:
+  [1] (front matter: title, abstract and anythi... 0/0/0  -> 0.00
+  [2] Abstract                                     0/0/0  -> 0.00
+  [3] 1. Revision History                          0/0/0  -> 0.00
+  [4] 2. Introduction                              0/0/0  -> 0.00
+  [5] 3. Motivation                                0/0/0  -> 0.00
+  [6] 4. Proposed Solution 1: Mandate Array-Lik... 1/0/0  -> 0.33
+  [7] 5. Proposed Solution 2: Query Traits         0/0/0  -> 0.00
+  [8] 6. Complementary Use of Both Solutions       0/0/0  -> 0.00
+  [9] 7. Comparison                                0/0/0  -> 0.00
+  [10] 8. Our Recommendation                        0/0/0  -> 0.00
+  [11] 9. Additional Discussion                     1/0/0  -> 0.33
+  [12] 10. Proposed Wording                         0/0/0  -> 0.00
+  [13] 11. Impact on Existing Code                  0/0/0  -> 0.00
+  [14] 12. Future Work                              0/0/0  -> 0.00
+candidate 1 (found by 1 of 42 passes): This layout matches the behavior of all mainstream SIMD targets we are aware of, and is well-suited to SIMD processing.
+candidate 2 (found by 1 of 42 passes): At Intel we have large intrinsic-based software code bases where bit-casts are used frequently
+
+## prior_art - grade 2.00 (fired in 12 of 14 sections, strong in 5)  (SHARED PASSAGE)
+under each rule: top2 2.00   corroborated 2.00   accumulate 2.00   max 2.00
+votes by section:
+  [1] (front matter: title, abstract and anythi... 0/0/0  -> 0.00
+  [2] Abstract                                     1/1/1  -> 1.00
+  [3] 1. Revision History                          0/0/0  -> 0.00
+  [4] 2. Introduction                              2/2/2  -> 2.00
+  [5] 3. Motivation                                2/2/2  -> 2.00
+  [6] 4. Proposed Solution 1: Mandate Array-Lik... 2/2/2  -> 2.00
+  [7] 5. Proposed Solution 2: Query Traits         1/1/1  -> 1.00
+  [8] 6. Complementary Use of Both Solutions       1/1/1  -> 1.00
+  [9] 7. Comparison                                1/2/2  -> 1.67
+  [10] 8. Our Recommendation                        1/1/1  -> 1.00
+  [11] 9. Additional Discussion                     2/2/2  -> 2.00
+  [12] 10. Proposed Wording                         1/0/0  -> 0.33
+  [13] 11. Impact on Existing Code                  1/1/1  -> 1.00
+  [14] 12. Future Work                              1/1/1  -> 1.00
+candidate 1 (found by 3 of 42 passes): This paper recommends two approaches in combination: specifying an array-like object representation for `basic_vec&lt;T, *native-abi*&lt;T>>` with no inter-element or trailing padding, and adding traits for implementations to report whether a given specialization is array-like.
+candidate 2 (found by 3 of 42 passes): This contrasts with `std::array`, which has a well-specified contiguous layout that makes `bit_cast` operations portable and predictable.
+candidate 3 (found by 3 of 42 passes): Every target vendor provides these operations with well-defined semantics (e.g., Intel’s `_mm256_castps_si256`, ARM’s `vreinterpretq_s32_f32`).
+candidate 4 (found by 3 of 42 passes): Across all mainstream SIMD targets we are aware of (including Intel/AMD x86, Arm NEON/SVE, RISC-V V, and PowerPC/VSX), vector data is naturally treated as a contiguous sequence of elements when transferred to and from memory.
+
+## vehicle - grade 2.00 (fired in 6 of 14 sections, strong in 3)  (SHARED PASSAGE)
+under each rule: top2 2.00   corroborated 2.00   accumulate 2.00   max 2.00
+votes by section:
+  [1] (front matter: title, abstract and anythi... 0/0/0  -> 0.00
+  [2] Abstract                                     0/0/0  -> 0.00
+  [3] 1. Revision History                          0/0/0  -> 0.00
+  [4] 2. Introduction                              1/1/1  -> 1.00
+  [5] 3. Motivation                                1/1/1  -> 1.00
+  [6] 4. Proposed Solution 1: Mandate Array-Lik... 2/2/2  -> 2.00
+  [7] 5. Proposed Solution 2: Query Traits         0/0/0  -> 0.00
+  [8] 6. Complementary Use of Both Solutions       0/0/0  -> 0.00
+  [9] 7. Comparison                                0/0/0  -> 0.00
+  [10] 8. Our Recommendation                        2/2/2  -> 2.00
+  [11] 9. Additional Discussion                     2/2/2  -> 2.00
+  [12] 10. Proposed Wording                         0/0/0  -> 0.00
+  [13] 11. Impact on Existing Code                  0/1/0  -> 0.33
+  [14] 12. Future Work                              0/0/0  -> 0.00
+candidate 1 (found by 3 of 42 passes): Users migrating from intrinsics to `std::simd` lose this capability because the Working Draft does not specify an object representation that gives portable semantics for such reinterpretation.
+candidate 2 (found by 3 of 42 passes): The problem is not with flexibility per se, but rather that the exceptional non-standard case penalises the common case of writing portable code.
+candidate 3 (found by 3 of 42 passes): If intrinsic interop is recommended, then the layout implications of that interop should also be normative; otherwise the recommendation is misleading.
+candidate 4 (found by 2 of 42 passes): Leaving layout unspecified creates an internal inconsistency when the indirect path through intrinsics is well-defined but direct `bit_cast` is not.
+
+## coordination - grade 2.00 (fired in 4 of 14 sections, strong in 2)  (SHARED PASSAGE)
+under each rule: top2 2.00   corroborated 2.00   accumulate 2.00   max 2.00
+votes by section:
+  [1] (front matter: title, abstract and anythi... 0/0/0  -> 0.00
+  [2] Abstract                                     0/0/0  -> 0.00
+  [3] 1. Revision History                          0/0/0  -> 0.00
+  [4] 2. Introduction                              1/1/2  -> 1.33
+  [5] 3. Motivation                                1/1/1  -> 1.00
+  [6] 4. Proposed Solution 1: Mandate Array-Lik... 2/2/2  -> 2.00
+  [7] 5. Proposed Solution 2: Query Traits         0/0/0  -> 0.00
+  [8] 6. Complementary Use of Both Solutions       0/0/0  -> 0.00
+  [9] 7. Comparison                                0/0/0  -> 0.00
+  [10] 8. Our Recommendation                        0/0/0  -> 0.00
+  [11] 9. Additional Discussion                     2/2/2  -> 2.00
+  [12] 10. Proposed Wording                         0/0/0  -> 0.00
+  [13] 11. Impact on Existing Code                  0/0/0  -> 0.00
+  [14] 12. Future Work                              0/0/0  -> 0.00
+candidate 1 (found by 3 of 42 passes): Every target vendor provides these operations with well-defined semantics (e.g., Intel’s `_mm256_castps_si256`, ARM’s `vreinterpretq_s32_f32`).
+candidate 2 (found by 3 of 42 passes): BLAS, LAPACK, FFTW, Eigen, and game engines all assume array-like layout. Without a specified layout, `std::simd` cannot reliably interoperate with these libraries.
+candidate 3 (found by 2 of 42 passes): Users migrating from intrinsics to `std::simd` lose this capability because the Working Draft does not specify an object representation that gives portable semantics for such reinterpretation.
+candidate 4 (found by 2 of 42 passes): The indirect path through intrinsics is legal and portable because intrinsics have well-defined bit-reinterpretation semantics. But the direct path is not portable.
+
+## insufficiency - grade 0.83 (fired in 4 of 14 sections, strong in 0)  (SHARED PASSAGE)
+under each rule: top2 0.83   corroborated 1.00   accumulate 1.17   max 1.00
+votes by section:
+  [1] (front matter: title, abstract and anythi... 0/0/0  -> 0.00
+  [2] Abstract                                     0/0/0  -> 0.00
+  [3] 1. Revision History                          0/0/0  -> 0.00
+  [4] 2. Introduction                              1/1/1  -> 1.00
+  [5] 3. Motivation                                1/1/0  -> 0.67
+  [6] 4. Proposed Solution 1: Mandate Array-Lik... 0/0/0  -> 0.00
+  [7] 5. Proposed Solution 2: Query Traits         0/0/0  -> 0.00
+  [8] 6. Complementary Use of Both Solutions       0/0/0  -> 0.00
+  [9] 7. Comparison                                0/0/0  -> 0.00
+  [10] 8. Our Recommendation                        0/0/1  -> 0.33
+  [11] 9. Additional Discussion                     1/0/0  -> 0.33
+  [12] 10. Proposed Wording                         0/0/0  -> 0.00
+  [13] 11. Impact on Existing Code                  0/0/0  -> 0.00
+  [14] 12. Future Work                              0/0/0  -> 0.00
+candidate 1 (found by 3 of 42 passes): All target-specific intrinsics (e.g., Intel’s `_mm256_castps_si256`, ARM’s `vreinterpretq_s32_f32`, etc.) provide well-defined bit-reinterpretation.
+candidate 2 (found by 2 of 42 passes): However, because the object representation of `basic_vec` is not specified, these idioms do not have portable semantics when expressed in terms of `std::simd`.
+candidate 3 (found by 1 of 42 passes): The current state represents a usability regression compared to existing practice with vendor intrinsics, which have always had well-defined bit-casting semantics.
+candidate 4 (found by 1 of 42 passes): Without a specified layout, `std::simd` cannot reliably interoperate with these libraries.
+
+## implementation - grade 1.00  [binary: max] (fired in 3 of 14 sections, strong in 0)  (SHARED PASSAGE)
+under each rule: top2 1.00   corroborated 1.00   accumulate 1.00   max 1.00
+votes by section:
+  [1] (front matter: title, abstract and anythi... 0/0/0  -> 0.00
+  [2] Abstract                                     0/0/0  -> 0.00
+  [3] 1. Revision History                          0/0/0  -> 0.00
+  [4] 2. Introduction                              0/0/0  -> 0.00
+  [5] 3. Motivation                                0/0/0  -> 0.00
+  [6] 4. Proposed Solution 1: Mandate Array-Lik... 0/0/1  -> 0.33
+  [7] 5. Proposed Solution 2: Query Traits         0/0/0  -> 0.00
+  [8] 6. Complementary Use of Both Solutions       0/0/0  -> 0.00
+  [9] 7. Comparison                                0/0/0  -> 0.00
+  [10] 8. Our Recommendation                        0/0/0  -> 0.00
+  [11] 9. Additional Discussion                     1/1/1  -> 1.00
+  [12] 10. Proposed Wording                         0/0/0  -> 0.00
+  [13] 11. Impact on Existing Code                  1/1/1  -> 1.00
+  [14] 12. Future Work                              0/0/0  -> 0.00
+candidate 1 (found by 3 of 42 passes): At Intel we have large intrinsic-based software code bases where bit-casts are used frequently, and we have found that well-defined bit-casting semantics are essential for writing portable, high-performance code.
+candidate 2 (found by 3 of 42 passes): Implementations using array-like layout for native-width vectors (Intel, GCC, Clang, on major platforms) require no changes.
+candidate 3 (found by 1 of 42 passes): This layout matches the behavior of all mainstream SIMD targets we are aware of, and is well-suited to SIMD processing.
+
+-->

@@ -11,7 +11,7 @@
 
 import marimo
 
-__generated_with = "0.24.0"
+__generated_with = "0.25.1"
 app = marimo.App(width="medium")
 
 
@@ -29,7 +29,7 @@ def _():
     import numpy as np
     from matplotlib.axes import Axes
 
-    return Axes, Counter, Path, dataclass, mo, np, plt, re, sqlite3, statistics
+    return Counter, Path, dataclass, mo, np, plt, re, sqlite3, statistics
 
 
 @app.cell
@@ -42,25 +42,13 @@ def _(mo):
 
 @app.cell
 def _(mo):
-    # Where the reports are. The current corpus is the one the batch writes
-    # to now; swap the comment to read an earlier one instead, or just type a
-    # path into the box below.
-    OUT_DIR = "/code/wg21-paperflow/data/paperweight-out"
-    # OUT_DIR = "/code/wg21-papergate/papergate-out-v1"  # 2925 reports, prompt v1
+    OUT_DIR = "/code/wg21-papergate/paperweight-out-v8"
     DB_PATH = "/code/wg21-paperflow/data/paperstore.db"
-
-    out_dir_input = mo.ui.text(
-        value=OUT_DIR,
-        label="Report directory",
-        full_width=True,
-    )
-    db_input = mo.ui.text(
-        value=DB_PATH,
-        label="Paperstore DB (expected paper list)",
-        full_width=True,
-    )
-    mo.vstack([out_dir_input, db_input])
-    return db_input, out_dir_input
+    mo.md(f"""
+    - **Report directory:** `{OUT_DIR}`
+    - **Paperstore DB:** `{DB_PATH}`
+    """)
+    return DB_PATH, OUT_DIR
 
 
 @app.cell
@@ -68,9 +56,8 @@ def _(Path, dataclass, re):
     LABELS = ["None", "Weak", "Adequate", "Strong", "Excellent"]
     FILE_RE = re.compile(r"^paperweight_([a-z0-9]+)_run(\d+)\.md$")
     VERDICT_RE = re.compile(
-        r"^Verdict:\s*(?P<label>n/a|\w+)"
-        r"(?:\s*\((?P<score>\d+)\s*/\s*(?P<max>\d+)"
-        r"(?:\s*,\s*close to\s*(?P<close>\w+))?\))?"
+        r"^Verdict:\s*(?P<label>n/a|\w+(?: to \w+)?)"
+        r"(?:\s*\((?P<score>\d+)\s*/\s*(?P<max>\d+)\))?"
         r"\s*$"
     )
 
@@ -81,12 +68,24 @@ def _(Path, dataclass, re):
         label: str | None
         score: int | None
         max_score: int | None
-        close_to: str | None
         parse_error: str | None
 
         @property
         def is_na(self) -> bool:
             return self.label == "n/a"
+
+        @property
+        def bands(self) -> frozenset[str]:
+            """Every band the label covers: one for a plain label, the whole
+            range for an "X to Y" span, none for n/a or an unknown label."""
+            if self.label is None or self.is_na:
+                return frozenset()
+            low, _, high = self.label.partition(" to ")
+            high = high or low
+            if low not in LABELS or high not in LABELS:
+                return frozenset()
+            return frozenset(
+                LABELS[LABELS.index(low):LABELS.index(high) + 1])
 
     def parse_report(path: Path, pid: str, run_no: int) -> Run:
         """Parse the Verdict line (first line) of one report file."""
@@ -94,13 +93,13 @@ def _(Path, dataclass, re):
             with path.open(errors="replace") as handle:
                 first = handle.readline().strip()
         except OSError as exc:
-            return Run(pid, run_no, None, None, None, None,
+            return Run(pid, run_no, None, None, None,
                        f"unreadable: {exc}")
         if not first:
-            return Run(pid, run_no, None, None, None, None, "empty file")
+            return Run(pid, run_no, None, None, None, "empty file")
         match = VERDICT_RE.match(first)
         if not match:
-            return Run(pid, run_no, None, None, None, None,
+            return Run(pid, run_no, None, None, None,
                        f"no verdict line: {first[:60]!r}")
         score = match.group("score")
         max_score = match.group("max")
@@ -110,7 +109,6 @@ def _(Path, dataclass, re):
             label=match.group("label"),
             score=int(score) if score is not None else None,
             max_score=int(max_score) if max_score is not None else None,
-            close_to=match.group("close"),
             parse_error=None,
         )
 
@@ -139,26 +137,26 @@ def _(Path, dataclass, re):
 
 
 @app.cell
-def _(Path, load_runs, mo, out_dir_input):
-    runs = load_runs(Path(out_dir_input.value))
+def _(OUT_DIR, Path, load_runs, mo):
+    runs = load_runs(Path(OUT_DIR))
     # Every cell below reads `runs`, and all of them divide by some count of
     # it, so an empty directory is reported once here rather than as an
     # arithmetic error further down.
     mo.stop(
         not runs,
-        mo.md(f"No reports in `{out_dir_input.value}` yet. Run the batch, or "
-              f"point the box above at a directory that has some."),
+        mo.md(f"No reports in `{OUT_DIR}` yet. Run the batch, or "
+              f"set OUT_DIR to a directory that has some."),
     )
     return (runs,)
 
 
 @app.cell
-def _(Path, db_input, sqlite3):
+def _(DB_PATH, Path, sqlite3):
     """Expected paper list, queried exactly like batch-paperweight.py."""
     db_error: str | None = None
     expected_pids: list[str] = []
     try:
-        conn = sqlite3.connect(f"file:{db_input.value}?mode=ro", uri=True)
+        conn = sqlite3.connect(f"file:{DB_PATH}?mode=ro", uri=True)
         try:
             paper_rows = conn.execute(
                 "SELECT paper_id, markdown_path FROM papers "
@@ -203,8 +201,13 @@ def _(Run, dataclass, statistics):
             if len(scores) == len(parsed) and len(set(scores)) == 1:
                 return "uniform (all identical)"
             return "uniform (same label)"
-        if n_na and len(labels - {"n/a"}) == 1:
+        if n_na:
             return "split n/a vs verdict"
+        # Different labels that still share a band, e.g. "Adequate" and
+        # "Adequate to Strong", are a span narrowing or widening between
+        # runs, not a contradiction.
+        if frozenset.intersection(*(r.bands for r in parsed)):
+            return "overlapping spans"
         return "DISAGREE"
 
     def paper_stats(all_runs: list[Run]) -> list[PaperStats]:
@@ -236,7 +239,7 @@ def _(Run, dataclass, statistics):
 
 
 @app.cell
-def _(expected_pids, paper_stats, runs):
+def _(expected_pids: list[str], paper_stats, runs):
     stats = paper_stats(runs)
     good_runs = [r for r in runs if r.parse_error is None]
     scored_runs = [r for r in good_runs if r.score is not None]
@@ -256,21 +259,29 @@ def _(expected_pids, paper_stats, runs):
                       if m}
     n_missing = sum(len(m) for m in missing_by_pid.values())
     n_expected_papers = len(expected_pids) if expected_pids else len(stats)
-    return (expected_runs, good_runs, missing_by_pid, n_expected_papers,
-            n_missing, na_runs, parse_errors, scored_runs, stats)
+    return (
+        expected_runs,
+        good_runs,
+        missing_by_pid,
+        n_expected_papers,
+        n_missing,
+        na_runs,
+        scored_runs,
+        stats,
+    )
 
 
 @app.cell
 def _(
     Counter,
-    db_error,
+    db_error: str | None,
     expected_runs,
     good_runs,
     missing_by_pid,
     mo,
-    na_runs,
     n_expected_papers,
     n_missing,
+    na_runs,
     runs,
     scored_runs,
     statistics,
@@ -300,23 +311,38 @@ def _(
         - **{len(runs)}** report files across **{len(stats)}** papers ({runs_per_paper})
         - {expected_line}
         - missing: **{n_missing}** across **{len(missing_by_pid)}** papers
-        - n/a verdicts: **{len(na_runs)}** ({100 * len(na_runs) / len(good_runs):.1f}% of parsed) — paper triaged as not a standardization proposal, so the criteria were not applied
+        - n/a verdicts: **{len(na_runs)}** ({100 * len(na_runs) / len(good_runs):.1f}% of parsed) — a triage turn that reads only the paper's front matter (title, abstract and anything before the first heading) classified it as not a proposal, so the criteria were not applied
         - score (x/{scored_runs[0].max_score}) over {len(scores)} scored runs: min {min(scores)}, max {max(scores)}, mean {statistics.fmean(scores):.2f}, median {statistics.median(scores):.0f}, stdev {statistics.pstdev(scores):.2f}
 
         **What the score is.** Each run grades the paper on 7 criteria:
         why it matters, who is affected, prior art and alternatives, why
         the standard, coordination and interoperability, why a library
-        will not do, and implementation experience. Every criterion is
-        graded 0 (not addressed),
-        1 (asserted, with nothing supporting it) or 2 (supported with
-        specifics) — a non-zero grade is only accepted if backed by a
-        verbatim quote from the paper. Each criterion is graded
-        independently on every chunk of the paper (3 samples per chunk)
-        and its best grade counts. The score is the sum of the 7 grades,
-        so 0–{scored_runs[0].max_score}. The verdict label is a fixed
-        lookup on that sum: None = 0, Weak <= 3, Adequate <= 7,
-        Strong <= 11, Excellent <= 14. "close to X" means the score sits
-        exactly on a band edge, one point from the next label.
+        will not do, and implementation experience. The paper is split
+        into units, one per H2 section plus the front matter (sections
+        over 30,000 characters are split into parts), and every
+        criterion is graded on every unit by 3 independent samples:
+        0 (not addressed), 1 (asserted, with nothing supporting it) or
+        2 (supported with specifics). A non-zero grade only stands if
+        it is backed by a verbatim quote of 3–40 words found in the
+        paper, and bookkeeping sections (revision history,
+        acknowledgements, references, poll records, wording) are graded
+        0 whatever they mention.
+
+        A unit's grade is the mean of its 3 samples. A criterion's grade
+        is the mean of its two best units, except implementation
+        experience, which takes its single best unit, since one checkable
+        pointer is enough. The score is the sum of the 7 criterion
+        grades, a fraction from 0 to {scored_runs[0].max_score}, and the
+        report shows it rounded to the nearest integer. The verdict
+        label is a fixed lookup on that integer: None = 0, Weak <= 3,
+        Adequate <= 7, Strong <= 11, Excellent <= 14.
+
+        **Span labels.** The run also computes the total each of the 3
+        samples would have produced alone. When those totals fall in
+        different bands from the verdict's, the label becomes a span
+        from the lowest band reached to the highest, e.g. "Adequate to
+        Strong (7/14)". The number is still the verdict's own score, so
+        it sits in one of the span's bands, not necessarily the first.
         """
     )
     return
@@ -360,23 +386,68 @@ def _(plt):
 
 
 @app.cell
-def _(Counter, LABELS, THEME, VERDICT_COLORS, good_runs, plt, scored_runs):
-    label_counts = Counter(r.label for r in good_runs)
-    ordered_labels = [label for label in LABELS + ["n/a"]
-                      if label_counts.get(label)]
-    ordered_labels += sorted(label for label in label_counts
-                             if label not in LABELS and label != "n/a")
-    score_counts = Counter(r.score for r in scored_runs)
+def _(mo):
+    mo.md("""
+    ## Verdicts and scores
 
-    dist_fig, (ax_labels, ax_scores) = plt.subplots(1, 2, figsize=(11, 4))
-    ax_labels.bar(
+    **Verdict distribution:** how many runs received each verdict label.
+    Plain bands and "X to Y" spans are separate bars, ordered top to bottom
+    by the bands they cover, so each span sits between the bands it joins.
+    A span is colored like its lower band. n/a is last.
+    """)
+    return
+
+
+@app.cell
+def _(Counter, LABELS, THEME, VERDICT_COLORS, good_runs, plt):
+    label_counts = Counter(r.label for r in good_runs)
+
+    def label_order(label: str) -> tuple[int, int, int]:
+        """Sort bands and "X to Y" spans by their bounds, n/a and unknowns last."""
+        if label == "n/a":
+            return (len(LABELS), 0, 0)
+        low, _, high = label.partition(" to ")
+        high = high or low
+        if low in LABELS and high in LABELS:
+            return (LABELS.index(low), LABELS.index(high), 0)
+        return (len(LABELS), 1, 0)
+
+    def label_color(label: str) -> str:
+        """Color a span by its lower band."""
+        return VERDICT_COLORS.get(label.partition(" to ")[0], THEME["red"])
+
+    ordered_labels = sorted(label_counts, key=lambda lb: (label_order(lb), lb))
+    label_fig, ax_labels = plt.subplots(
+        figsize=(10, 0.4 * len(ordered_labels) + 1.2))
+    label_bars = ax_labels.barh(
         ordered_labels,
         [label_counts[label] for label in ordered_labels],
-        color=[VERDICT_COLORS.get(label, THEME["red"])
-               for label in ordered_labels],
+        color=[label_color(label) for label in ordered_labels],
     )
+    ax_labels.invert_yaxis()
+    ax_labels.bar_label(label_bars, padding=3)
+    ax_labels.margins(x=0.08)
     ax_labels.set_title(f"Verdict distribution ({len(good_runs)} parsed runs)")
-    ax_labels.set_ylabel("runs")
+    ax_labels.set_xlabel("runs")
+    label_fig.tight_layout()
+    label_fig
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md("""
+    **Score histogram:** how many scored runs received each score. This is
+    the rounded integer shown on the verdict line; n/a runs have no score
+    and are not counted.
+    """)
+    return
+
+
+@app.cell
+def _(Counter, THEME, plt, scored_runs):
+    score_counts = Counter(r.score for r in scored_runs)
+    score_fig, ax_scores = plt.subplots(figsize=(10, 4))
     score_xs = list(range(min(score_counts), max(score_counts) + 1))
     ax_scores.bar(score_xs, [score_counts.get(x, 0) for x in score_xs],
                   color=THEME["blue"])
@@ -385,9 +456,23 @@ def _(Counter, LABELS, THEME, VERDICT_COLORS, good_runs, plt, scored_runs):
         f"x/{scored_runs[0].max_score})"
     )
     ax_scores.set_xlabel("score")
+    ax_scores.set_ylabel("runs")
     ax_scores.set_xticks(score_xs)
-    dist_fig.tight_layout()
-    dist_fig
+    score_fig.tight_layout()
+    score_fig
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md("""
+    ## Scores across runs
+
+    One row per paper and one column per run, colored by the run's score.
+    Papers are sorted by their mean score, lowest at the top. A row that
+    changes color across runs is a paper whose score moves between runs;
+    gray cells are n/a or missing runs.
+    """)
     return
 
 
@@ -407,7 +492,7 @@ def _(THEME, np, plt, scored_runs, stats):
     cmap = plt.colormaps["viridis"].copy()
     cmap.set_bad(THEME["bad"])
 
-    heat_fig, ax = plt.subplots(figsize=(6, 4))
+    heat_fig, ax = plt.subplots(figsize=(10, 4))
     image = ax.imshow(np.ma.masked_invalid(grid), aspect="auto", cmap=cmap,
                       vmin=0, vmax=scored_runs[0].max_score,
                       interpolation="nearest")
@@ -423,11 +508,43 @@ def _(THEME, np, plt, scored_runs, stats):
 
 
 @app.cell
+def _(mo):
+    mo.md("""
+    ## Consistency between runs
+
+    Every paper is run several times, and each paper is placed in exactly
+    one category by comparing the verdict labels of its runs:
+
+    - **uniform (all identical):** every run has the same label and the
+      same score.
+    - **uniform (same label):** every run has the same label, but the
+      scores differ.
+    - **uniform (all n/a):** every run classified the document as not a
+      proposal.
+    - **overlapping spans:** the labels differ, but there is at least one
+      band that every run's label covers. For example, "Adequate",
+      "Adequate to Strong" and "Weak to Adequate" all cover Adequate. The
+      runs agree on that band and differ only in how wide the span is, so
+      this is not counted as a disagreement.
+    - **split n/a vs verdict:** some runs classified the document as not a
+      proposal and others graded it.
+    - **DISAGREE:** the labels differ and no single band is covered by
+      every run, e.g. "Weak" in one run and "Strong" in another.
+    - **only 1 run / parse error:** too few readable reports to compare.
+
+    **Per-paper verdict consistency:** how many papers fall in each
+    category.
+    """)
+    return
+
+
+@app.cell
 def _(Counter, THEME, plt, stats):
     CATEGORY_COLORS = {
         "uniform (all identical)": THEME["green"],
         "uniform (same label)": THEME["lightgreen"],
         "uniform (all n/a)": THEME["gray"],
+        "overlapping spans": THEME["blue"],
         "split n/a vs verdict": THEME["orange"],
         "DISAGREE": THEME["red"],
         "only 1 run": THEME["gray"],
@@ -435,17 +552,37 @@ def _(Counter, THEME, plt, stats):
     }
     category_counts = Counter(p.category for p in stats)
     categories = [c for c in CATEGORY_COLORS if category_counts.get(c)]
-    spread_counts = Counter(p.score_range for p in stats if p.n_scored >= 2)
-    n_spread = sum(spread_counts.values())
 
-    consistency_fig, (ax_cat, ax_spread) = plt.subplots(1, 2, figsize=(11, 4))
-    ax_cat.barh(
-        categories[::-1],
-        [category_counts[c] for c in categories[::-1]],
-        color=[CATEGORY_COLORS[c] for c in categories[::-1]],
+    consistency_fig, ax_cat = plt.subplots(figsize=(10, 4))
+    category_bars = ax_cat.barh(
+        categories,
+        [category_counts[c] for c in categories],
+        color=[CATEGORY_COLORS[c] for c in categories],
     )
+    ax_cat.invert_yaxis()
+    ax_cat.bar_label(category_bars, padding=3)
+    ax_cat.margins(x=0.08)
     ax_cat.set_title(f"Per-paper verdict consistency ({len(stats)} papers)")
     ax_cat.set_xlabel("papers")
+    consistency_fig.tight_layout()
+    consistency_fig
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md("""
+    **Score spread per paper:** each paper's highest run score minus its
+    lowest, over papers with at least two scored runs.
+    """)
+    return
+
+
+@app.cell
+def _(Counter, THEME, plt, stats):
+    spread_counts = Counter(p.score_range for p in stats if p.n_scored >= 2)
+    n_spread = sum(spread_counts.values())
+    spread_fig, ax_spread = plt.subplots(figsize=(10, 4))
     spread_xs = list(range(max(spread_counts) + 1))
     ax_spread.bar(spread_xs, [spread_counts.get(x, 0) for x in spread_xs],
                   color=THEME["orange"])
@@ -455,8 +592,9 @@ def _(Counter, THEME, plt, stats):
     )
     ax_spread.set_xlabel("score spread")
     ax_spread.set_ylabel("papers")
-    consistency_fig.tight_layout()
-    consistency_fig
+    ax_spread.set_xticks(spread_xs)
+    spread_fig.tight_layout()
+    spread_fig
     return
 
 
@@ -466,6 +604,7 @@ def _(mo, statistics, stats):
     uniform = [p for p in stats if p.category.startswith("uniform")]
     identical = [p for p in stats if p.category == "uniform (all identical)"]
     all_na = [p for p in stats if p.category == "uniform (all n/a)"]
+    overlapping = [p for p in stats if p.category == "overlapping spans"]
     disagree = [p for p in stats if p.category == "DISAGREE"]
     split = [p for p in stats if p.category == "split n/a vs verdict"]
     partial = [p for p in stats
@@ -477,11 +616,18 @@ def _(mo, statistics, stats):
         ## Consistency aggregates
 
         - all runs same verdict label: **{len(uniform)}/{n_papers} ({100 * len(uniform) / n_papers:.0f}%)** — of which {len(identical)} identical scores, {len(all_na)} uniformly n/a
-        - label disagreement: **{len(disagree)}/{n_papers} ({100 * len(disagree) / n_papers:.0f}%)**
-        - split n/a vs a real verdict: **{len(split)}**
+        - different labels that all share a band (e.g. "Adequate" and "Adequate to Strong"): **{len(overlapping)}/{n_papers} ({100 * len(overlapping) / n_papers:.0f}%)**
+        - label disagreement, no band common to every run: **{len(disagree)}/{n_papers} ({100 * len(disagree) / n_papers:.0f}%)**
+        - split n/a vs a real verdict (triage disagreed between runs): **{len(split)}**
         - missing/unparseable runs: **{len(partial)}**
 
+        Category definitions are listed above the consistency chart.
+
         ### Score spread within papers
+
+        Scores here are the rounded integers on the verdict line, so a
+        spread of 1 can come from two runs whose exact scores were only
+        slightly apart but rounded to neighboring integers.
 
         Max minus min of a paper's scores, over **{len(ranges)}** papers
         with 2+ scored runs: mean **{statistics.fmean(ranges):.2f}**,
@@ -501,34 +647,48 @@ def _(mo, statistics, stats):
 
 
 @app.cell
-def _(fmt_verdict, mo, stats):
+def _(mo, stats):
     inconsistent = sorted(
         (p for p in stats
          if p.category in ("DISAGREE", "split n/a vs verdict")),
         key=lambda p: (p.score_range, p.score_stdev),
         reverse=True,
     )
-    mo.vstack([
-        mo.md(f"## Inconsistent papers — interactive dataframe\n\n"
-              f"All {len(inconsistent)} papers with label disagreement or "
-              f"an n/a split, most inconsistent first. This is the "
-              f"sortable, paginated dataframe; a plain-text version of "
-              f"the same table follows below."),
-        mo.ui.table(
-            [
-                {
-                    "paper": p.pid,
-                    "category": p.category,
-                    "spread": p.score_range,
-                    "stdev": round(p.score_stdev, 2),
-                    "verdicts": " ".join(fmt_verdict(r) for r in p.runs),
-                }
-                for p in inconsistent
-            ],
-            pagination=True,
-        ),
-    ])
+    mo.md(
+        f"""
+        ## Inconsistent papers — interactive dataframe
+
+        All {len(inconsistent)} papers in the DISAGREE or split n/a vs
+        verdict categories, sorted by score spread then score standard
+        deviation, largest first. Papers with overlapping spans are not
+        listed, because their runs share a band. **Spread** is the paper's
+        highest run score minus its lowest, **stdev** is the population
+        standard deviation of its run scores, and **verdicts** lists every
+        run in run order as label(score). This is the sortable, paginated
+        dataframe; a plain-text version of the same table follows below.
+        """
+    )
     return (inconsistent,)
+
+
+@app.cell
+def _(fmt_verdict, inconsistent, mo):
+    # Wrapped so the PDF export rasterizes the table instead of printing
+    # its raw data.
+    mo.vstack([mo.ui.table(
+        [
+            {
+                "paper": p.pid,
+                "category": p.category,
+                "spread": p.score_range,
+                "stdev": round(p.score_stdev, 2),
+                "verdicts": " ".join(fmt_verdict(r) for r in p.runs),
+            }
+            for p in inconsistent
+        ],
+        pagination=True,
+    )])
+    return
 
 
 @app.cell
@@ -544,9 +704,8 @@ def _(fmt_verdict, inconsistent, mo):
         ]
         inconsistent_text = mo.md(
             f"## Inconsistent papers ({len(inconsistent)})\n\n"
-            "All papers with label disagreement or an n/a split, most "
-            "inconsistent first. Same data as the dataframe above, as "
-            "plain text.\n\n"
+            "Same papers and columns as the dataframe above, as plain "
+            "text.\n\n"
             "| Paper | Category | Spread | Stdev | Verdicts |\n"
             "|-------|----------|-------:|------:|----------|\n"
             + "\n".join(inc_rows)
@@ -556,10 +715,10 @@ def _(fmt_verdict, inconsistent, mo):
 
 
 @app.cell
-def _(THEME, expected_runs, mo, n_expected_papers, n_missing, plt, runs):
+def _(THEME, expected_runs, n_expected_papers, n_missing, plt, runs):
     n_present = len(runs)
     n_expected = n_expected_papers * expected_runs
-    pie_out, ax_pie = plt.subplots(figsize=(5, 4))
+    pie_out, ax_pie = plt.subplots(figsize=(10, 4))
     ax_pie.pie(
         [n_present, n_missing],
         labels=[f"reports present\n{n_present}", f"missing\n{n_missing}"],
@@ -578,7 +737,13 @@ def _(THEME, expected_runs, mo, n_expected_papers, n_missing, plt, runs):
 
 
 @app.cell
-def _(db_error, expected_runs, missing_by_pid, mo, n_expected_papers):
+def _(
+    db_error: str | None,
+    expected_runs,
+    missing_by_pid,
+    mo,
+    n_expected_papers,
+):
     if db_error is None:
         source_note = (
             f"Expected paper list from the paperstore DB "

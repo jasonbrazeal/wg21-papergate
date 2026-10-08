@@ -1,0 +1,129 @@
+Verdict: Adequate to Strong (7/14)
+
+The paper gives a solid account of why bitmask-style operations on scoped enums are a recurring and legitimate need, and it situates its design clearly within existing proposals and prior art. The support becomes much thinner, however, when the paper turns to the case for standardization itself: the affected audience, the inadequacy of library solutions, and the existence of meaningful implementation experience are asserted rather than demonstrated.
+
+- The strongest part of the paper is its grounding in prior work, with a clear lineage from Anthony Williams’s and Andreas Fertig’s designs and an explicit connection to the existing bitmask type specification.
+- The paper also establishes the basic motivation well, pointing to repeated boilerplate and the loss of type safety when users fall back to C-style enums or integers.
+- The weakest area is implementation experience, where a single Godbolt link is offered without evidence of use, testing, or deployment in real codebases.
+- The most glaring omission is the absence of a developed argument for why this cannot be served by a library, since the paper only gestures at the existence of many standalone solutions without explaining why they are insufficient.
+
+
+<!-- paperweight-diagnostics
+# Diagnostics
+
+Provisional: Strong (7.00/14, close to Adequate)
+
+Provisionally addressed: 7 of 7. Provisional points: 7.00 of 14. Unsupported quotes rejected: 4. Replies missing: 0. Sections: 8. Samples: 3.
+
+Intra-section rule: mean of 3 samples. Inter-section rule in force: top2 (existence-asserting criteria always take the max).
+Totals under every inter-section rule: top2 7.00   corroborated 8.00   accumulate 7.00   max 8.67
+
+## SUMMARY
+grades: motivation 2.00  audience 0.83  prior_art 2.00  vehicle 0.50  coordination 0.17  insufficiency 0.17  implementation 1.33
+sample agreement: 50 of 56 section-criterion pairs unanimous (89%)
+single-sample totals would have been: 5.50 / 8.50 / 7.00   (all 3 samples: 7.00)
+headings: h2 7
+on threshold: audience
+splits: motivation[6] 0/1/0  audience[4] 2/2/1  prior_art[6] 1/2/2  coordination[4] 0/1/0
+        insufficiency[4] 0/1/0  implementation[7] 0/2/2
+## END SUMMARY
+
+## motivation - grade 2.00 (fired in 3 of 8 sections, strong in 2)  (SHARED PASSAGE)
+under each rule: top2 2.00   corroborated 2.00   accumulate 2.00   max 2.00
+votes by section:
+  [1] (front matter: title, abstract and anythi... 0/0/0  -> 0.00
+  [2] 1 Revision history                           0/0/0  -> 0.00
+  [3] 2 Proposal                                   0/0/0  -> 0.00
+  [4] 3 Motivations                                2/2/2  -> 2.00
+  [5] 4 Considered alternatives solutions          2/2/2  -> 2.00
+  [6] 5 Design                                     0/1/0  -> 0.33
+  [7] 6 Reference Implementation                   0/0/0  -> 0.00
+  [8] 7 Wording                                    0/0/0  -> 0.00
+candidate 1 (found by 3 of 24 passes): A repeated boilerplate code for bitmask behavior can be found with quite high frequency in the wild
+candidate 2 (found by 3 of 24 passes): Reverting to using C-style enums means losing the benefits of scoped constants and the type safety provided by C++ `enum class`.
+candidate 3 (found by 1 of 24 passes): User should be able to use bitwise operation normally as they would with plain C-Style `int`
+
+## audience - grade 0.83 (fired in 1 of 8 sections, strong in 1)  (ON THRESHOLD)  (SHARED PASSAGE)
+under each rule: top2 0.83   corroborated 1.00   accumulate 0.83   max 1.67
+votes by section:
+  [1] (front matter: title, abstract and anythi... 0/0/0  -> 0.00
+  [2] 1 Revision history                           0/0/0  -> 0.00
+  [3] 2 Proposal                                   0/0/0  -> 0.00
+  [4] 3 Motivations                                2/2/1  -> 1.67
+  [5] 4 Considered alternatives solutions          0/0/0  -> 0.00
+  [6] 5 Design                                     0/0/0  -> 0.00
+  [7] 6 Reference Implementation                   0/0/0  -> 0.00
+  [8] 7 Wording                                    0/0/0  -> 0.00
+candidate 1 (found by 1 of 24 passes): For example, in LLVM project, the same boilerplate code is repeated multiple times. - [perms.h](https://github.com/llvm/llvm-project/blob/main/libcxx/include/__filesystem/perms.h) - [byte.h](https://github.com/llvm/llvm-project/blob/main/libcxx/include/__cstddef/byte.h) - [perm_options.h](https://github.com/llvm/llvm-project/blob/main/libcxx/include/__filesystem/perm_options.h)
+candidate 2 (found by 1 of 24 passes): For example, in LLVM project, the same boilerplate code is repeated multiple times.
+candidate 3 (found by 1 of 24 passes): A repeated boilerplate code for bitmask behavior can be found with quite high frequency in the wild
+
+## prior_art - grade 2.00 (fired in 4 of 8 sections, strong in 3)
+under each rule: top2 2.00   corroborated 2.00   accumulate 2.00   max 2.00
+votes by section:
+  [1] (front matter: title, abstract and anythi... 0/0/0  -> 0.00
+  [2] 1 Revision history                           0/0/0  -> 0.00
+  [3] 2 Proposal                                   1/1/1  -> 1.00
+  [4] 3 Motivations                                2/2/2  -> 2.00
+  [5] 4 Considered alternatives solutions          2/2/2  -> 2.00
+  [6] 5 Design                                     1/2/2  -> 1.67
+  [7] 6 Reference Implementation                   0/0/0  -> 0.00
+  [8] 7 Wording                                    0/0/0  -> 0.00
+candidate 1 (found by 3 of 24 passes): A bitmask solution was proposed by Anthony Williams in 2015: [Using Enum Classes as Bitfields](https://www.justsoftwaresolutions.co.uk/cplusplus/using-enum-classes-as-bitfields.html).
+candidate 2 (found by 3 of 24 passes): While std::bitset supports bitwise operations, it is limited in other respects.
+candidate 3 (found by 2 of 24 passes): to provide similar behavior to 16.3.3.3.3 [[bitmask.types]](https://wg21.link/bitmask.types).
+candidate 4 (found by 2 of 24 passes): The design builds upon the solution proposed by Andreas Fertig [C++20 Concepts applied - Safe bitmasks using scoped enums](https://andreasfertig.com/blog/2024/01/cpp20-concepts-applied/) which in itself is an extension to [Using Enum Classes as Bitfields](https://www.justsoftwaresolutions.co.uk/cplusplus/using-enum-classes-as-bitfields.html) initially devised by Anthony Williams
+
+## vehicle - grade 0.50 (fired in 1 of 8 sections, strong in 0)  (SHARED PASSAGE)
+under each rule: top2 0.50   corroborated 1.00   accumulate 0.50   max 1.00
+votes by section:
+  [1] (front matter: title, abstract and anythi... 0/0/0  -> 0.00
+  [2] 1 Revision history                           0/0/0  -> 0.00
+  [3] 2 Proposal                                   0/0/0  -> 0.00
+  [4] 3 Motivations                                1/1/1  -> 1.00
+  [5] 4 Considered alternatives solutions          0/0/0  -> 0.00
+  [6] 5 Design                                     0/0/0  -> 0.00
+  [7] 6 Reference Implementation                   0/0/0  -> 0.00
+  [8] 7 Wording                                    0/0/0  -> 0.00
+candidate 1 (found by 3 of 24 passes): This type of use case is a sought-after feature and has led to the development of many standalone solutions.
+
+## coordination - grade 0.17 (fired in 1 of 8 sections, strong in 0)  (SHARED PASSAGE)
+under each rule: top2 0.17   corroborated 0.33   accumulate 0.17   max 0.33
+votes by section:
+  [1] (front matter: title, abstract and anythi... 0/0/0  -> 0.00
+  [2] 1 Revision history                           0/0/0  -> 0.00
+  [3] 2 Proposal                                   0/0/0  -> 0.00
+  [4] 3 Motivations                                0/1/0  -> 0.33
+  [5] 4 Considered alternatives solutions          0/0/0  -> 0.00
+  [6] 5 Design                                     0/0/0  -> 0.00
+  [7] 6 Reference Implementation                   0/0/0  -> 0.00
+  [8] 7 Wording                                    0/0/0  -> 0.00
+candidate 1 (found by 1 of 24 passes): This type of use case is a sought-after feature and has led to the development of many standalone solutions.
+
+## insufficiency - grade 0.17 (fired in 1 of 8 sections, strong in 0)  (SHARED PASSAGE)
+under each rule: top2 0.17   corroborated 0.33   accumulate 0.17   max 0.33
+votes by section:
+  [1] (front matter: title, abstract and anythi... 0/0/0  -> 0.00
+  [2] 1 Revision history                           0/0/0  -> 0.00
+  [3] 2 Proposal                                   0/0/0  -> 0.00
+  [4] 3 Motivations                                0/1/0  -> 0.33
+  [5] 4 Considered alternatives solutions          0/0/0  -> 0.00
+  [6] 5 Design                                     0/0/0  -> 0.00
+  [7] 6 Reference Implementation                   0/0/0  -> 0.00
+  [8] 7 Wording                                    0/0/0  -> 0.00
+candidate 1 (found by 1 of 24 passes): This type of use case is a sought-after feature and has led to the development of many standalone solutions.
+
+## implementation - grade 1.33  [binary: max] (fired in 1 of 8 sections, strong in 0)
+under each rule: top2 1.33   corroborated 1.33   accumulate 1.33   max 1.33
+votes by section:
+  [1] (front matter: title, abstract and anythi... 0/0/0  -> 0.00
+  [2] 1 Revision history                           0/0/0  -> 0.00
+  [3] 2 Proposal                                   0/0/0  -> 0.00
+  [4] 3 Motivations                                0/0/0  -> 0.00
+  [5] 4 Considered alternatives solutions          0/0/0  -> 0.00
+  [6] 5 Design                                     0/0/0  -> 0.00
+  [7] 6 Reference Implementation                   0/2/2  -> 1.33
+  [8] 7 Wording                                    0/0/0  -> 0.00
+candidate 1 (found by 2 of 24 passes): On godbolt Clang reflection [https://godbolt.org/z/zebW6hGYY](https://godbolt.org/z/zebW6hGYY)
+
+-->

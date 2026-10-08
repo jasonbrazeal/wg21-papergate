@@ -1,0 +1,122 @@
+Verdict: Adequate (6/14)
+
+The paper offers only a narrow foundation for its standardization case: it establishes that runtime-indexed tuples address a real problem, but most of the surrounding argument is asserted rather than demonstrated. The thinnest areas are the absence of any identified affected audience and the repeated reliance on ABI-related claims without supporting evidence or examples.
+
+- The strongest support is the clear statement of why runtime-indexed tuples matter, namely that ordinary tuples cannot be optimized for runtime indexing without ABI breaks.
+- The paper claims prior art and alternatives exist but does not actually describe or compare any specific existing approaches.
+- The case for why this belongs in the standard rather than a library rests on the same unestablished ABI and efficiency assertions.
+- The most glaring omission is the complete lack of any discussion of who is affected by the problem or would use the proposed facility.
+
+
+<!-- paperweight-diagnostics
+# Diagnostics
+
+Provisional: Adequate (5.67/14)
+
+Provisionally addressed: 6 of 7. Provisional points: 5.67 of 14. Unsupported quotes rejected: 3. Replies missing: 0. Sections: 7. Samples: 3.
+
+Intra-section rule: mean of 3 samples. Inter-section rule in force: top2 (existence-asserting criteria always take the max).
+Totals under every inter-section rule: top2 5.67   corroborated 5.67   accumulate 6.17   max 6.67
+
+## SUMMARY
+grades: motivation 1.50  audience 0.00  prior_art 0.83  vehicle 1.00  coordination 0.67  insufficiency 1.00  implementation 0.67
+sample agreement: 46 of 49 section-criterion pairs unanimous (94%)
+single-sample totals would have been: 5.00 / 6.00 / 6.00   (all 3 samples: 5.67)
+headings: h2 6
+on threshold: motivation
+splits: prior_art[4] 1/1/0  coordination[6] 0/0/1  implementation[5] 0/1/1
+## END SUMMARY
+
+## motivation - grade 1.50 (fired in 3 of 7 sections, strong in 1)  (ON THRESHOLD)  (SHARED PASSAGE)
+under each rule: top2 1.50   corroborated 1.00   accumulate 2.00   max 2.00
+votes by section:
+  [1] (front matter: title, abstract and anythi... 0/0/0  -> 0.00
+  [2] 1. Abstract                                  1/1/1  -> 1.00
+  [3] 2. Motivation                                2/2/2  -> 2.00
+  [4] 3. Proposed Solution                         0/0/0  -> 0.00
+  [5] 4. Technical Specifications                  0/0/0  -> 0.00
+  [6] 5. Summary                                   1/1/1  -> 1.00
+  [7] 6. Acknowledgements                          0/0/0  -> 0.00
+candidate 1 (found by 3 of 21 passes): This proposal provides a new standard library type std::runtime_indexed_tuple that can be indexed at runtime unlike ordinary tuples.
+candidate 2 (found by 3 of 21 passes): Existing tuples cannot be optimized for runtime indexing without breaking the Application Binary Interface (ABI).
+candidate 3 (found by 3 of 21 passes): A standardized interface for runtime-indexed tuples prevents developers from reinventing inefficient wheels.
+
+## audience - grade 0.00 (fired in 0 of 7 sections, strong in 0)
+under each rule: top2 0.00   corroborated 0.00   accumulate 0.00   max 0.00
+votes by section:
+  [1] (front matter: title, abstract and anythi... 0/0/0  -> 0.00
+  [2] 1. Abstract                                  0/0/0  -> 0.00
+  [3] 2. Motivation                                0/0/0  -> 0.00
+  [4] 3. Proposed Solution                         0/0/0  -> 0.00
+  [5] 4. Technical Specifications                  0/0/0  -> 0.00
+  [6] 5. Summary                                   0/0/0  -> 0.00
+  [7] 6. Acknowledgements                          0/0/0  -> 0.00
+candidates: (none validated)
+
+## prior_art - grade 0.83 (fired in 2 of 7 sections, strong in 0)  (SHARED PASSAGE)
+under each rule: top2 0.83   corroborated 1.00   accumulate 0.83   max 1.00
+votes by section:
+  [1] (front matter: title, abstract and anythi... 0/0/0  -> 0.00
+  [2] 1. Abstract                                  0/0/0  -> 0.00
+  [3] 2. Motivation                                1/1/1  -> 1.00
+  [4] 3. Proposed Solution                         1/1/0  -> 0.67
+  [5] 4. Technical Specifications                  0/0/0  -> 0.00
+  [6] 5. Summary                                   0/0/0  -> 0.00
+  [7] 6. Acknowledgements                          0/0/0  -> 0.00
+candidate 1 (found by 2 of 21 passes): Existing tuples cannot be optimized for runtime indexing without breaking the Application Binary Interface (ABI).
+candidate 2 (found by 1 of 21 passes): Existing std::tuple implementations are optimized only for limiting space usage since they can only be indexed at compile time.
+candidate 3 (found by 1 of 21 passes): Currently, std::variant cannot hold references. This proposal introduces a specialization for std::variant<T&...>
+candidate 4 (found by 1 of 21 passes): Currently, std::variant cannot hold references.
+
+## vehicle - grade 1.00 (fired in 2 of 7 sections, strong in 0)  (SHARED PASSAGE)
+under each rule: top2 1.00   corroborated 1.00   accumulate 1.00   max 1.00
+votes by section:
+  [1] (front matter: title, abstract and anythi... 0/0/0  -> 0.00
+  [2] 1. Abstract                                  0/0/0  -> 0.00
+  [3] 2. Motivation                                1/1/1  -> 1.00
+  [4] 3. Proposed Solution                         0/0/0  -> 0.00
+  [5] 4. Technical Specifications                  0/0/0  -> 0.00
+  [6] 5. Summary                                   1/1/1  -> 1.00
+  [7] 6. Acknowledgements                          0/0/0  -> 0.00
+candidate 1 (found by 3 of 21 passes): Existing tuples cannot be optimized for runtime indexing without breaking the Application Binary Interface (ABI).
+candidate 2 (found by 3 of 21 passes): A standardized interface for runtime-indexed tuples prevents developers from reinventing inefficient wheels.
+
+## coordination - grade 0.67 (fired in 2 of 7 sections, strong in 0)  (SHARED PASSAGE)
+under each rule: top2 0.67   corroborated 1.00   accumulate 0.67   max 1.00
+votes by section:
+  [1] (front matter: title, abstract and anythi... 0/0/0  -> 0.00
+  [2] 1. Abstract                                  0/0/0  -> 0.00
+  [3] 2. Motivation                                1/1/1  -> 1.00
+  [4] 3. Proposed Solution                         0/0/0  -> 0.00
+  [5] 4. Technical Specifications                  0/0/0  -> 0.00
+  [6] 5. Summary                                   0/0/1  -> 0.33
+  [7] 6. Acknowledgements                          0/0/0  -> 0.00
+candidate 1 (found by 3 of 21 passes): Existing tuples cannot be optimized for runtime indexing without breaking the Application Binary Interface (ABI).
+candidate 2 (found by 1 of 21 passes): By providing a specialized layout, implementations can optimize for runtime indexing without violating the zero-overhead principle or breaking ABI boundaries.
+
+## insufficiency - grade 1.00 (fired in 2 of 7 sections, strong in 0)  (SHARED PASSAGE)
+under each rule: top2 1.00   corroborated 1.00   accumulate 1.00   max 1.00
+votes by section:
+  [1] (front matter: title, abstract and anythi... 0/0/0  -> 0.00
+  [2] 1. Abstract                                  0/0/0  -> 0.00
+  [3] 2. Motivation                                1/1/1  -> 1.00
+  [4] 3. Proposed Solution                         0/0/0  -> 0.00
+  [5] 4. Technical Specifications                  0/0/0  -> 0.00
+  [6] 5. Summary                                   1/1/1  -> 1.00
+  [7] 6. Acknowledgements                          0/0/0  -> 0.00
+candidate 1 (found by 3 of 21 passes): Existing tuples cannot be optimized for runtime indexing without breaking the Application Binary Interface (ABI).
+candidate 2 (found by 3 of 21 passes): By providing a specialized layout, implementations can optimize for runtime indexing without violating the zero-overhead principle or breaking ABI boundaries.
+
+## implementation - grade 0.67  [binary: max] (fired in 1 of 7 sections, strong in 0)
+under each rule: top2 0.67   corroborated 0.67   accumulate 0.67   max 0.67
+votes by section:
+  [1] (front matter: title, abstract and anythi... 0/0/0  -> 0.00
+  [2] 1. Abstract                                  0/0/0  -> 0.00
+  [3] 2. Motivation                                0/0/0  -> 0.00
+  [4] 3. Proposed Solution                         0/0/0  -> 0.00
+  [5] 4. Technical Specifications                  0/1/1  -> 0.67
+  [6] 5. Summary                                   0/0/0  -> 0.00
+  [7] 6. Acknowledgements                          0/0/0  -> 0.00
+candidate 1 (found by 2 of 21 passes): Reference implementation illustrating potential optimizations and O(1) dispatch using current C++ standards
+
+-->

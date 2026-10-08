@@ -27,12 +27,13 @@ import urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
+PAPERGATE_DIR = Path("/code/wg21-papergate")
 PAPERFLOW_DIR = Path("/code/wg21-paperflow")
-PROMPT_DEFAULT = PAPERFLOW_DIR / "crates" / "paperweight" / "paperweight.md"
+PROMPT_DEFAULT = PAPERFLOW_DIR / "crates" / "paperweight" / "paperweight_CALIBRATION.md"
 GATEWAY_CONFIG_DEFAULT = Path(__file__).resolve().parent / "batch-paperweight-gateway.toml"
 PAPERWEIGHT_BIN_DEFAULT = PAPERFLOW_DIR / "target" / "release" / "paperweight"
 DATA_DIR_DEFAULT = PAPERFLOW_DIR / "data"
-OUT_DIR_DEFAULT = DATA_DIR_DEFAULT / "paperweight-out"
+OUT_DIR_DEFAULT = PAPERGATE_DIR / "paperweight-out"
 GATEWAY_BIN_DEFAULT = Path("/code/promptforge/target/release/promptforge-gateway")
 GATEWAY_PROFILE_DEFAULT = "runpod"
 GATEWAY_URL_DEFAULT = "http://127.0.0.1:8082/v1"
