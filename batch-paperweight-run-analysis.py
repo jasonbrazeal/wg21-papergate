@@ -647,6 +647,350 @@ def _(mo, statistics, stats):
 
 
 @app.cell
+def _(LABELS, OUT_DIR, Path, dataclass, mo, re, runs):
+    CRITERION_LABELS = {
+        "motivation": "why it matters",
+        "audience": "who is affected",
+        "prior_art": "prior art and alternatives",
+        "vehicle": "why the standard",
+        "coordination": "coordination and interoperability",
+        "insufficiency": "why a library will not do",
+        "implementation": "implementation experience",
+    }
+    # The exact score at which the rounded score crosses into the next band:
+    # a score of 3.49 rounds to 3 (Weak), 3.5 rounds to 4 (Adequate).
+    BAND_EDGES = [0.5, 3.5, 7.5, 11.5]
+
+    def band_for(total: float) -> str:
+        """Band of a score, rounded half up the way the prompt rounds it."""
+        rounded = int(total + 0.5)
+        for edge, label in zip(BAND_EDGES, LABELS):
+            if rounded < edge:
+                return label
+        return LABELS[-1]
+
+    @dataclass
+    class Diagnostics:
+        exact: float
+        grades: dict[str, float]
+        sample_totals: list[float]
+        votes: dict[str, list[tuple[int, ...]]]
+
+    PROVISIONAL_RE = re.compile(r"^Provisional: .*\((?P<exact>[\d.]+)/\d+")
+    GRADES_RE = re.compile(r"^grades: (?P<body>.+)$")
+    SAMPLES_RE = re.compile(
+        r"^single-sample totals would have been: (?P<body>[\d./ ]+?)\s+\(")
+    CRITERION_RE = re.compile(r"^## (?P<short>\w+) - grade ")
+    VOTE_RE = re.compile(r"^\s+\[\d+\].*\s(?P<votes>\d(?:/\d)+)\s+->\s+[\d.]+$")
+
+    def parse_diagnostics(path: Path) -> Diagnostics | None:
+        """Parse the diagnostics comment of one scored report, if it has one."""
+        text = path.read_text(errors="replace")
+        start = text.find("<!-- paperweight-diagnostics")
+        if start < 0:
+            return None
+        exact: float | None = None
+        grades: dict[str, float] = {}
+        sample_totals: list[float] = []
+        votes: dict[str, list[tuple[int, ...]]] = {}
+        current: str | None = None
+        for line in text[start:].splitlines():
+            if m := PROVISIONAL_RE.match(line):
+                exact = float(m["exact"])
+            elif m := GRADES_RE.match(line):
+                parts = m["body"].split()
+                grades = {parts[i]: float(parts[i + 1])
+                          for i in range(0, len(parts) - 1, 2)}
+            elif m := SAMPLES_RE.match(line):
+                sample_totals = [float(x) for x in m["body"].split("/")]
+            elif m := CRITERION_RE.match(line):
+                current = m["short"]
+                votes[current] = []
+            elif current and (m := VOTE_RE.match(line)):
+                votes[current].append(
+                    tuple(int(v) for v in m["votes"].split("/")))
+        if exact is None or not grades:
+            return None
+        return Diagnostics(exact, grades, sample_totals, votes)
+
+    diags = {
+        (r.pid, r.run_no): d
+        for r in runs
+        if r.score is not None
+        and (d := parse_diagnostics(
+            Path(OUT_DIR) / f"paperweight_{r.pid.lower()}_run{r.run_no}.md"))
+    }
+    mo.stop(
+        not diags,
+        mo.md("## Sources of variation\n\nThe reports in this directory "
+              "carry no diagnostics, so this section cannot be computed."),
+    )
+    return BAND_EDGES, CRITERION_LABELS, band_for, diags
+
+
+@app.cell
+def _(diags, mo, scored_runs):
+    mo.md(f"""
+    ## Sources of variation
+
+    The analyses below read the diagnostics block that the prompt appends
+    to every report inside an HTML comment (`<!-- paperweight-diagnostics
+    ... -->`), which is invisible when the report is rendered. It records
+    the exact score before rounding, the grade of each criterion, every
+    sample's vote on every section, and the total each sample would have
+    produced on its own. Diagnostics were read from **{len(diags)}** of
+    the **{len(scored_runs)}** scored runs; n/a runs have none.
+    """)
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md("""
+    ### Which criteria move between runs
+
+    For each paper with at least two runs, each criterion's grade (0 to 2)
+    is compared across the paper's runs. **Mean grade** is the average
+    grade over all runs. **Mean change** is the average, over papers, of
+    the criterion's highest grade minus its lowest. **Papers changed** is
+    the share of papers where the grade was not identical in every run,
+    and **changed by 1+** is the share where it moved by a full point or
+    more. The criteria with the largest changes contribute most to papers'
+    scores and labels moving between runs.
+    """)
+    return
+
+
+@app.cell
+def _(CRITERION_LABELS, THEME, diags, plt, statistics):
+    grades_by_paper: dict[str, dict[str, list[float]]] = {}
+    for (diag_pid, _run_no), diag in diags.items():
+        paper_grades = grades_by_paper.setdefault(diag_pid, {})
+        for short, grade in diag.grades.items():
+            paper_grades.setdefault(short, []).append(grade)
+
+    criterion_rows = []
+    for short, label in CRITERION_LABELS.items():
+        all_grades = [g for pg in grades_by_paper.values()
+                      for g in pg.get(short, [])]
+        changes = [max(pg[short]) - min(pg[short])
+                   for pg in grades_by_paper.values()
+                   if len(pg.get(short, [])) >= 2]
+        if not changes:
+            continue
+        criterion_rows.append({
+            "label": label,
+            "mean_grade": statistics.fmean(all_grades),
+            "mean_change": statistics.fmean(changes),
+            "changed": sum(1 for c in changes if c > 0) / len(changes),
+            "changed_1": sum(1 for c in changes if c >= 1) / len(changes),
+            "papers": len(changes),
+        })
+
+    criterion_fig, ax_crit = plt.subplots(figsize=(10, 4))
+    crit_bars = ax_crit.barh(
+        [row["label"] for row in criterion_rows],
+        [row["mean_change"] for row in criterion_rows],
+        color=THEME["orange"],
+    )
+    ax_crit.invert_yaxis()
+    ax_crit.bar_label(crit_bars, fmt="%.2f", padding=3)
+    ax_crit.margins(x=0.1)
+    ax_crit.set_title("Mean change in criterion grade between runs of a paper")
+    ax_crit.set_xlabel("highest grade minus lowest grade (0 to 2)")
+    criterion_fig.tight_layout()
+    criterion_fig
+    return (criterion_rows,)
+
+
+@app.cell
+def _(criterion_rows, mo):
+    criterion_table = "\n".join(
+        f"| {row['label']} | {row['mean_grade']:.2f} "
+        f"| {row['mean_change']:.2f} | {100 * row['changed']:.0f}% "
+        f"| {100 * row['changed_1']:.0f}% |"
+        for row in criterion_rows
+    )
+    mo.md(
+        f"Over **{criterion_rows[0]['papers']}** papers with at least two "
+        f"scored runs.\n\n"
+        "| Criterion | Mean grade | Mean change | Papers changed "
+        "| Changed by 1+ |\n"
+        "|-----------|-----------:|------------:|---------------:"
+        "|--------------:|\n"
+        + criterion_table
+    )
+    return
+
+
+@app.cell
+def _(BAND_EDGES, band_for, diags, statistics):
+    exact_by_paper: dict[str, list[float]] = {}
+    for (exact_pid, _run_no), exact_diag in diags.items():
+        exact_by_paper.setdefault(exact_pid, []).append(exact_diag.exact)
+
+    edge_rows = []
+    for exacts in exact_by_paper.values():
+        if len(exacts) < 2:
+            continue
+        mean_exact = statistics.fmean(exacts)
+        edge_rows.append({
+            "range": max(exacts) - min(exacts),
+            "rounded_range": int(max(exacts) + 0.5) - int(min(exacts) + 0.5),
+            "distance": min(abs(mean_exact - e) for e in BAND_EDGES),
+            "changed_band": len({band_for(x) for x in exacts}) > 1,
+        })
+    return (edge_rows,)
+
+
+@app.cell
+def _(edge_rows, mo, statistics):
+    changed_rows = [r for r in edge_rows if r["changed_band"]]
+    stable_rows = [r for r in edge_rows if not r["changed_band"]]
+
+    def near_share(rows: list[dict]) -> str:
+        if not rows:
+            return "n/a"
+        near = sum(1 for r in rows if r["distance"] <= 0.5)
+        return f"{near}/{len(rows)} ({100 * near / len(rows):.0f}%)"
+
+    mo.md(
+        f"""
+        **Whole-paper scores and band edges.** The verdict line shows the
+        score rounded to an integer, but the exact score is a fraction, and
+        the rounded score crosses into the next band at exact scores of
+        0.5, 3.5, 7.5 and 11.5. A paper **changed band** if its runs'
+        rounded scores fall in more than one band (span labels are
+        ignored here), and a paper is **near an edge** if the mean of its
+        exact scores is within 0.5 points of one of those values.
+
+        - mean change in exact score between runs: **{statistics.fmean(r['range'] for r in edge_rows):.2f}** points, against **{statistics.fmean(r['rounded_range'] for r in edge_rows):.2f}** for the rounded score
+        - papers that changed band: **{len(changed_rows)}**; near an edge: **{near_share(changed_rows)}**
+        - papers in the same band every run: **{len(stable_rows)}**; near an edge: **{near_share(stable_rows)}**
+
+        When most papers that changed band are near an edge, the band
+        changes come mostly from small score differences landing on either
+        side of an edge, not from large disagreements between runs.
+        """
+    )
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md("""
+    ### Sample agreement and span labels
+
+    Every section is graded on every criterion by 3 independent samples.
+    A section-criterion pair is **unanimous** when all 3 samples gave the
+    same grade. A pair that is not unanimous is one of three kinds:
+
+    - **one found evidence:** one sample gave a non-zero grade and the
+      other two gave 0, e.g. 0/0/1.
+    - **one found nothing:** one sample gave 0 and the other two found
+      evidence, e.g. 2/2/0.
+    - **1 vs 2:** all three found evidence but disagreed on whether it was
+      asserted (1) or supported (2), e.g. 1/2/2.
+
+    The first two are about whether a sample noticed a passage; only the
+    third is about how strictly the scale was applied.
+    """)
+    return
+
+
+@app.cell
+def _(CRITERION_LABELS, THEME, diags, plt):
+    agreement_rows = []
+    for agree_short, agree_label in CRITERION_LABELS.items():
+        counts = {"pairs": 0, "unanimous": 0, "found": 0, "nothing": 0,
+                  "boundary": 0}
+        for agree_diag in diags.values():
+            for vote in agree_diag.votes.get(agree_short, []):
+                counts["pairs"] += 1
+                zeros = sum(1 for v in vote if v == 0)
+                if len(set(vote)) == 1:
+                    counts["unanimous"] += 1
+                elif zeros == len(vote) - 1:
+                    counts["found"] += 1
+                elif zeros == 1:
+                    counts["nothing"] += 1
+                else:
+                    counts["boundary"] += 1
+        if counts["pairs"]:
+            agreement_rows.append({"label": agree_label, **counts})
+
+    agreement_fig, ax_agree = plt.subplots(figsize=(10, 4))
+    kinds = [("found", "one found evidence", THEME["orange"]),
+             ("nothing", "one found nothing", THEME["red"]),
+             ("boundary", "1 vs 2", THEME["purple"])]
+    left = [0.0] * len(agreement_rows)
+    for key, kind_label, color in kinds:
+        widths = [100 * row[key] / row["pairs"] for row in agreement_rows]
+        ax_agree.barh([row["label"] for row in agreement_rows], widths,
+                      left=left, color=color, label=kind_label)
+        left = [a + b for a, b in zip(left, widths)]
+    ax_agree.invert_yaxis()
+    ax_agree.set_title("Section-criterion pairs where the 3 samples "
+                       "disagreed, by kind")
+    ax_agree.set_xlabel("% of pairs")
+    ax_agree.legend()
+    agreement_fig.tight_layout()
+    agreement_fig
+    return (agreement_rows,)
+
+
+@app.cell
+def _(agreement_rows, mo):
+    agreement_table = "\n".join(
+        f"| {row['label']} | {row['pairs']} "
+        f"| {100 * row['unanimous'] / row['pairs']:.1f}% "
+        f"| {row['found']} | {row['nothing']} | {row['boundary']} |"
+        for row in agreement_rows
+    )
+    mo.md(
+        "| Criterion | Pairs | Unanimous | One found evidence "
+        "| One found nothing | 1 vs 2 |\n"
+        "|-----------|------:|----------:|-------------------:"
+        "|------------------:|-------:|\n"
+        + agreement_table
+    )
+    return
+
+
+@app.cell
+def _(band_for, diags, mo, scored_runs):
+    span_runs = [r for r in scored_runs if " to " in (r.label or "")]
+    outside_counts: dict[int, int] = {}
+    for span_run in span_runs:
+        span_diag = diags.get((span_run.pid, span_run.run_no))
+        if span_diag is None or not span_diag.sample_totals:
+            continue
+        verdict_band = band_for(span_run.score)
+        outside = sum(1 for t in span_diag.sample_totals
+                      if band_for(t) != verdict_band)
+        outside_counts[outside] = outside_counts.get(outside, 0) + 1
+    n_spans = sum(outside_counts.values())
+    span_table = "\n".join(
+        f"| {k} | {v} | {100 * v / n_spans:.0f}% |"
+        for k, v in sorted(outside_counts.items())
+    )
+    mo.md(
+        f"**Where span labels come from.** A span appears when the total a "
+        f"single sample would have produced on its own lands in a different "
+        f"band from the verdict. **{len(span_runs)}** of the "
+        f"**{len(scored_runs)}** scored runs "
+        f"({100 * len(span_runs) / len(scored_runs):.0f}%) received a span. "
+        f"For each of them, this counts how many of the 3 single-sample "
+        f"totals fell outside the verdict's band. A count of 1 means the "
+        f"span came from one sample disagreeing with the other two.\n\n"
+        "| Samples outside the verdict's band | Span runs | Share |\n"
+        "|-----------------------------------:|----------:|------:|\n"
+        + span_table
+    )
+    return
+
+
+@app.cell
 def _(mo, stats):
     inconsistent = sorted(
         (p for p in stats
